@@ -9,6 +9,8 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 
+import java.util.Properties;
+
 import com.spendWise.util.*;
 
 public class SpalshScreen extends Application {
@@ -37,8 +39,12 @@ public class SpalshScreen extends Application {
 
         // Loading components
         if (isDatabaseConnected()){
-            this.stop();
-            Dashboard.main(null);
+            if (isFirstTime()){
+                DatabaseConnection.setupDatabase();
+            }
+
+            // TODO: Load the main application
+            Platform.exit();
         } else {
             Alert alert = new Alert(AlertType.ERROR, "Couldn't establish the database connection.");
             alert.showAndWait();
@@ -49,8 +55,23 @@ public class SpalshScreen extends Application {
 
     private boolean isDatabaseConnected(){
         try {
-            Dashboard.connection = DatabaseConnection.getConnection();
+            DatabaseConnection.connection = DatabaseConnection.getConnection();
             return true;
+
+        } catch (Exception e){
+            return false;
+        }
+    }
+
+    private boolean isFirstTime(){
+        try {
+            Properties properties = new Properties();
+
+            try (var in = SpalshScreen.class.getResourceAsStream("config/app.properties")) {
+                properties.load(in);
+            }
+
+            return properties.getProperty("firstTime").equals("true");
 
         } catch (Exception e){
             return false;

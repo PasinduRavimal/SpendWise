@@ -13,6 +13,8 @@ public class DatabaseConnection {
 
     private DatabaseConnection(){}
 
+    public static Connection connection;
+
     /**
      * Connects to the database using the information in the databaseInfo.properties file.
      * @return the {@code Connection} object to the database
@@ -20,9 +22,13 @@ public class DatabaseConnection {
      * @throws IOException
      */
     public static Connection getConnection() throws SQLException, IOException {
+        if (connection != null) {
+            return connection;
+        }
+
         var props = new Properties();
 
-        try (InputStream in = DatabaseConnection.class.getResourceAsStream("databaseInfo.properties")) {
+        try (InputStream in = DatabaseConnection.class.getResourceAsStream("config/databaseInfo.properties")) {
             props.load(in);
         }
 
@@ -36,7 +42,8 @@ public class DatabaseConnection {
         String username = props.getProperty("jdbc.username");
         String password = props.getProperty("jdbc.password");
 
-        return DriverManager.getConnection(url, username, password);
+        connection = DriverManager.getConnection(url, username, password);
+        return connection;
     }
 
     /**
@@ -48,6 +55,23 @@ public class DatabaseConnection {
      * @throws SQLException
      */
     public static Connection getConnection(String url, String username, String password) throws SQLException {
-        return DriverManager.getConnection(url, username, password);
+        
+        if (connection != null && connection.getMetaData().getURL().equals(url)) {
+            return connection;
+        } else if (connection != null) {
+            connection.close();
+        }
+
+        connection = DriverManager.getConnection(url, username, password);
+
+        return connection;
+    }
+
+    public static void setupDatabase() throws SQLException{
+        Statement statement = connection.createStatement();
+
+        statement.addBatch("query");
+
+        // TODO: Add statements to create the tables
     }
 }
