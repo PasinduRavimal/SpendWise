@@ -3,10 +3,6 @@ package com.spendWise.util;
 import java.io.*;
 import java.util.*;
 
-import javax.sql.rowset.CachedRowSet;
-import javax.sql.rowset.RowSetFactory;
-import javax.sql.rowset.RowSetProvider;
-
 import com.spendWise.config.Config;
 
 import java.sql.*;
@@ -94,15 +90,55 @@ public class DatabaseConnection {
         getStatement();
 
         try{
-            statement.executeQuery("SELECT * FROM USERS");
+            statement.executeQuery("SELECT * FROM user");
         } catch (SQLException e){
             return false;
         }
 
-        return false;
+        return true;
     }
 
     public static void setupDatabase() throws SQLException{
-        // TODO: Add statements to create the tables
+        getStatement();
+
+        statement.addBatch("CREATE TABLE `spendwise`.`user` (" +
+                        "  `username` VARCHAR(30) NOT NULL," +
+                        "  `displayname` VARCHAR(50) NOT NULL," +
+                        "  `password` VARCHAR(30) NOT NULL," +
+                        "  PRIMARY KEY (`username`));");
+        
+        statement.addBatch("CREATE TABLE `spendwise`.`accounttypes` (" +
+                        "  `accountID` INT NOT NULL AUTO_INCREMENT," +
+                        "  `accountName` VARCHAR(50) NOT NULL," +
+                        "  PRIMARY KEY (`accountID`)," +
+                        "  UNIQUE INDEX `accountName_UNIQUE` (`accountName` ASC) VISIBLE);");
+
+        statement.addBatch("CREATE TABLE `spendwise`.`transaction` (" + 
+                        "  `transactionID` INT NOT NULL AUTO_INCREMENT," + 
+                        "  `username` VARCHAR(50) NOT NULL," + 
+                        "  `debitAccountID` INT NOT NULL," + 
+                        "  `creditAccountID` INT NOT NULL," + 
+                        "  `transactionTime` DATETIME NOT NULL," + 
+                        "  `amount` DOUBLE NOT NULL," + 
+                        "  PRIMARY KEY (`transactionID`)," + 
+                        "  INDEX `datetime` (`transactionTime` ASC) VISIBLE," + 
+                        "  INDEX `AccountsRelated` (`debitAccountID` ASC, `creditAccountID` ASC) VISIBLE," + 
+                        "  CONSTRAINT `FK_username`" + 
+                        "    FOREIGN KEY (`username`)" + 
+                        "    REFERENCES `spendwise`.`user` (`username`)" + 
+                        "    ON DELETE RESTRICT" + 
+                        "    ON UPDATE RESTRICT," + 
+                        "  CONSTRAINT `FK_debitaccounts`" + 
+                        "    FOREIGN KEY (`debitAccountID`)" + 
+                        "    REFERENCES `spendwise`.`accounttypes` (`accountID`)" + 
+                        "    ON DELETE RESTRICT" + 
+                        "    ON UPDATE RESTRICT," +
+                        "  CONSTRAINT `FK_creditaccounts`" + 
+                        "    FOREIGN KEY (`creditAccountID`)" + 
+                        "    REFERENCES `spendwise`.`accounttypes` (`accountID`)" + 
+                        "    ON DELETE RESTRICT" + 
+                        "    ON UPDATE RESTRICT);");
+
+        statement.executeBatch();
     }
 }

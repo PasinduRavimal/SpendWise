@@ -1,7 +1,6 @@
 package com.spendWise;
 
 import javafx.application.*;
-import javafx.concurrent.*;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.Alert;
@@ -12,10 +11,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.*;
-
-import java.sql.SQLException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import com.spendWise.util.*;
 
@@ -83,8 +78,10 @@ public class SpalshScreen extends Application {
                 if (!DatabaseConnection.isTablesExist()){
                     loadingLabel.setText("Setting up for the first use...");
                     DatabaseConnection.setupDatabase();
+                    loadingLabel.setText("Loading GUI...");
                     return true;
                 } else {
+                    loadingLabel.setText("Loading GUI...");
                     return true;
                 }
             } catch (Exception e){
