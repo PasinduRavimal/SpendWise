@@ -1,28 +1,42 @@
 package com.spendWise;
 
 import javafx.application.*;
+import javafx.concurrent.*;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.Text;
 import javafx.stage.*;
 
-import java.util.Properties;
+import java.sql.SQLException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.spendWise.util.*;
 
 public class SpalshScreen extends Application {
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
+    private Text loadingLabel = new Text("Loading...");
+    private ImageView image = new ImageView(SpalshScreen.class.getResource("resources/splashscreen.png").toString());
 
-        ImageView image = new ImageView(SpalshScreen.class.getResource("resources/splashscreen.png").toString());
+    @Override
+    public void start(Stage primaryStage) {
+
         Bounds imageBounds = image.getBoundsInParent();
 
-        Pane root = new Pane(image);
-        root.setPrefSize(imageBounds.getWidth(), imageBounds.getHeight());
+        loadingLabel.setX(25);
+        loadingLabel.setY(200);
+        loadingLabel.setFont(Font.font("System", null, FontPosture.ITALIC, 12));
+
+        Pane root = new Pane(image, loadingLabel);
+        double imageWidth = imageBounds.getWidth();
+        double imageHeight = imageBounds.getHeight(); 
+        root.setPrefSize(imageWidth, imageHeight);
 
         Scene scene = new Scene(root);
 
@@ -36,44 +50,47 @@ public class SpalshScreen extends Application {
         primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
         primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
 
-
         // Loading components
-        if (isDatabaseConnected()){
-            if (isFirstTime()){
-                DatabaseConnection.setupDatabase();
-            }
+        if (loadApplication()){
 
-            // TODO: Load the main application
-            Platform.exit();
         } else {
-            Alert alert = new Alert(AlertType.ERROR, "Couldn't establish the database connection.");
+            Alert alert = new Alert(AlertType.ERROR, "Couldn't load the application");
             alert.showAndWait();
 
             Platform.exit();
-        }
+        };
     }
 
     private boolean isDatabaseConnected(){
         try {
-            DatabaseConnection.connection = DatabaseConnection.getConnection();
-            return true;
+            if (DatabaseConnection.getConnection() != null){
+                return true;
+            };
+            return false;
 
         } catch (Exception e){
+            e.printStackTrace();
             return false;
         }
     }
 
-    private boolean isFirstTime(){
-        try {
-            Properties properties = new Properties();
+    private boolean loadApplication() {
 
-            try (var in = SpalshScreen.class.getResourceAsStream("config/app.properties")) {
-                properties.load(in);
+        loadingLabel.setText("Connecting to the database...");
+        if (isDatabaseConnected()){
+            loadingLabel.setText("Database connected...");
+            try {
+                if (!DatabaseConnection.isTablesExist()){
+                    loadingLabel.setText("Setting up for the first use...");
+                    DatabaseConnection.setupDatabase();
+                    return true;
+                } else {
+                    return true;
+                }
+            } catch (Exception e){
+                return false;
             }
-
-            return properties.getProperty("firstTime").equals("true");
-
-        } catch (Exception e){
+        } else {
             return false;
         }
     }
