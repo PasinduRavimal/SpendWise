@@ -107,37 +107,17 @@ public class DatabaseConnection {
                         "  `password` VARCHAR(30) NOT NULL," +
                         "  PRIMARY KEY (`username`));");
         
-        statement.addBatch("CREATE TABLE `spendwise`.`accounttypes` (" +
-                        "  `accountID` INT NOT NULL AUTO_INCREMENT," +
-                        "  `accountName` VARCHAR(50) NOT NULL," +
-                        "  PRIMARY KEY (`accountID`)," +
-                        "  UNIQUE INDEX `accountName_UNIQUE` (`accountName` ASC) VISIBLE);");
+        statement.addBatch("CREATE TABLE `spendwise`.`accounttypes` (`accountID` INT NOT NULL AUTO_INCREMENT , `accountName` VARCHAR(50) NOT NULL , PRIMARY KEY (`accountID`), UNIQUE `accountName_UNIQUE` (`accountName`)) ENGINE = InnoDB;");
 
-        statement.addBatch("CREATE TABLE `spendwise`.`transaction` (" + 
-                        "  `transactionID` INT NOT NULL AUTO_INCREMENT," + 
-                        "  `username` VARCHAR(50) NOT NULL," + 
-                        "  `debitAccountID` INT NOT NULL," + 
-                        "  `creditAccountID` INT NOT NULL," + 
-                        "  `transactionTime` DATETIME NOT NULL," + 
-                        "  `amount` DOUBLE NOT NULL," + 
-                        "  PRIMARY KEY (`transactionID`)," + 
-                        "  INDEX `datetime` (`transactionTime` ASC) VISIBLE," + 
-                        "  INDEX `AccountsRelated` (`debitAccountID` ASC, `creditAccountID` ASC) VISIBLE," + 
-                        "  CONSTRAINT `FK_username`" + 
-                        "    FOREIGN KEY (`username`)" + 
-                        "    REFERENCES `spendwise`.`user` (`username`)" + 
-                        "    ON DELETE RESTRICT" + 
-                        "    ON UPDATE RESTRICT," + 
-                        "  CONSTRAINT `FK_debitaccounts`" + 
-                        "    FOREIGN KEY (`debitAccountID`)" + 
-                        "    REFERENCES `spendwise`.`accounttypes` (`accountID`)" + 
-                        "    ON DELETE RESTRICT" + 
-                        "    ON UPDATE RESTRICT," +
-                        "  CONSTRAINT `FK_creditaccounts`" + 
-                        "    FOREIGN KEY (`creditAccountID`)" + 
-                        "    REFERENCES `spendwise`.`accounttypes` (`accountID`)" + 
-                        "    ON DELETE RESTRICT" + 
-                        "    ON UPDATE RESTRICT);");
+        statement.addBatch("CREATE TABLE `spendwise`.`transaction` (`transactionID` INT NOT NULL AUTO_INCREMENT , `username` VARCHAR(50) NOT NULL , `debitAccountID` INT NOT NULL , `creditAccountID` INT NOT NULL , `transactionTime` DATETIME NOT NULL , `amount` DOUBLE NOT NULL , PRIMARY KEY (`transactionID`)) ENGINE = InnoDB; ");
+
+        statement.addBatch("ALTER TABLE `transaction` ADD INDEX(`debitAccountID`, `creditAccountID`);");
+
+        statement.addBatch("ALTER TABLE `transaction` ADD CONSTRAINT `FK_username_user` FOREIGN KEY (`username`) REFERENCES `user`(`username`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
+
+        statement.addBatch("ALTER TABLE `transaction` ADD CONSTRAINT `FK_creditAccountID_account` FOREIGN KEY (`creditAccountID`) REFERENCES `accounttypes`(`accountID`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
+
+        statement.addBatch("ALTER TABLE `transaction` ADD CONSTRAINT `FK_debitAccountID_account` FOREIGN KEY (`debitAccountID`) REFERENCES `accounttypes`(`accountID`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
 
         statement.executeBatch();
     }
