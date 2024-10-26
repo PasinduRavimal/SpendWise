@@ -25,7 +25,7 @@ public class DatabaseConnection {
      * @throws SQLException
      * @throws IOException
      */
-    public static Connection getConnection() throws SQLException, IOException {
+    public static synchronized Connection getConnection() throws SQLException, IOException {
         if (connection != null) {
             return connection;
         }
@@ -58,7 +58,7 @@ public class DatabaseConnection {
      * @return the {@code Connection} object to the database
      * @throws SQLException
      */
-    public static Connection getConnection(String url, String username, String password) throws SQLException {
+    public static synchronized Connection getConnection(String url, String username, String password) throws SQLException {
         
         if (connection != null && connection.getMetaData().getURL().equals(url)) {
             return connection;
@@ -71,18 +71,26 @@ public class DatabaseConnection {
         return connection;
     }
 
-    public static Statement getStatement() throws SQLException {
+    public static synchronized Statement getStatement() throws UnsupportedOperationException, SQLException {
         if (connection != null && statement != null){
+            if (statement.getConnection().equals(connection))
+                return statement;
+
+            statement.close();
+            statement = connection.createStatement();
+
             return statement;
+
         } else if (connection != null) {
             statement = connection.createStatement();
             return statement;
+
         } else {
-            throw new SQLException("No connetion has been established");
+            throw new UnsupportedOperationException("No connetion has been established");
         }
     }
 
-    public static boolean isTablesExist() throws SQLException, UnsupportedOperationException{
+    public static boolean isTablesExist() throws SQLException, UnsupportedOperationException {
         if (connection == null){
             throw new UnsupportedOperationException("Database is not connected");
         }
@@ -95,10 +103,12 @@ public class DatabaseConnection {
             return false;
         }
 
+        statement.close();
+
         return true;
     }
 
-    public static void setupDatabase() throws SQLException{
+    public static void setupDatabase() throws SQLException {
         getStatement();
 
         statement.addBatch("CREATE TABLE `spendwise`.`user` (" +
@@ -120,5 +130,7 @@ public class DatabaseConnection {
         statement.addBatch("ALTER TABLE `transaction` ADD CONSTRAINT `FK_debitAccountID_account` FOREIGN KEY (`debitAccountID`) REFERENCES `accounttypes`(`accountID`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
 
         statement.executeBatch();
+
+        statement.close();
     }
 }
