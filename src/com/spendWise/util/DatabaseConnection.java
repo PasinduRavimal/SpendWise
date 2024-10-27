@@ -16,8 +16,8 @@ public class DatabaseConnection {
 
     private DatabaseConnection(){}
 
-    private static Connection connection;
-    private static Statement statement;
+    private volatile static Connection connection;
+    private volatile static Statement statement;
 
     /**
      * Connects to the database using the information in the databaseInfo.properties file.
@@ -119,7 +119,7 @@ public class DatabaseConnection {
         
         statement.addBatch("CREATE TABLE `spendwise`.`accounttypes` (`accountID` INT NOT NULL AUTO_INCREMENT , `accountName` VARCHAR(50) NOT NULL , PRIMARY KEY (`accountID`), UNIQUE `accountName_UNIQUE` (`accountName`)) ENGINE = InnoDB;");
 
-        statement.addBatch("CREATE TABLE `spendwise`.`transaction` (`transactionID` INT NOT NULL AUTO_INCREMENT , `username` VARCHAR(50) NOT NULL , `debitAccountID` INT NOT NULL , `creditAccountID` INT NOT NULL , `transactionTime` DATETIME NOT NULL , `amount` DOUBLE NOT NULL , PRIMARY KEY (`transactionID`)) ENGINE = InnoDB; ");
+        statement.addBatch("CREATE TABLE `spendwise`.`transaction` (`transactionID` INT NOT NULL AUTO_INCREMENT , `username` VARCHAR(50) NOT NULL , `debitAccountID` INT NOT NULL , `creditAccountID` INT NOT NULL , `transactionTime` DATETIME NOT NULL , `amount` DOUBLE NOT NULL , `description` VARCHAR(255) , PRIMARY KEY (`transactionID`)) ENGINE = InnoDB; ");
 
         statement.addBatch("ALTER TABLE `transaction` ADD INDEX(`debitAccountID`, `creditAccountID`);");
 

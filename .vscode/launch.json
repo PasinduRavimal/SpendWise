@@ -6,17 +6,24 @@
     "configurations": [
         {
             "type": "java",
+            "name": "SpalshScreen",
+            "request": "launch",
+            "mainClass": "com.spendWise.SpalshScreen",
+            "projectName": "spendWise_23fb8022"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}",
-            "vmArgs": "--module-path ${workspaceFolder}/dependencies/javafx-sdk-21.0.4/lib --add-modules javafx.controls,javafx.fxml,javafx.graphics",
+            "vmArgs": "--module-path ${workspaceFolder}/dependencies/javafx-sdk-21.0.4/lib --add-modules javafx.controls,javafx.fxml,javafx.graphics"
         },
         {
             "type": "java",
             "name": "App",
             "request": "launch",
             "mainClass": "App",
-            "vmArgs": "--module-path ${workspaceFolder}/dependencies/javafx-sdk-21.0.4/lib --add-modules javafx.controls,javafx.fxml,javafx.graphics",
+            "vmArgs": "--module-path ${workspaceFolder}/dependencies/javafx-sdk-21.0.4/lib --add-modules javafx.controls,javafx.fxml,javafx.graphics"
         }
     ]
 }

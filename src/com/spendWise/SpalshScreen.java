@@ -11,6 +11,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.*;
+import javafx.concurrent.*;
+
+import java.util.concurrent.*;
 
 import com.spendWise.util.*;
 
@@ -18,9 +21,20 @@ public class SpalshScreen extends Application {
 
     private Text loadingLabel = new Text("Loading...");
     private ImageView image = new ImageView(SpalshScreen.class.getResource("resources/splashscreen.png").toString());
+    private Task<Boolean> task;
+    private ExecutorService executor = Executors.newCachedThreadPool();
+    private short status = 0;
 
     @Override
     public void start(Stage primaryStage) {
+
+        primaryStage.setOnCloseRequest(event -> {
+            if (task != null)
+                task.cancel();
+            
+            executor.shutdown();
+            Platform.exit();
+        });
 
         Bounds imageBounds = image.getBoundsInParent();
 
@@ -45,15 +59,7 @@ public class SpalshScreen extends Application {
         primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
         primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
 
-        // Loading components
-        if (loadApplication()){
-
-        } else {
-            Alert alert = new Alert(AlertType.ERROR, "Couldn't load the application");
-            alert.showAndWait();
-
-            Platform.exit();
-        };
+        loadApplication();
     }
 
     private boolean isDatabaseConnected(){
@@ -69,27 +75,84 @@ public class SpalshScreen extends Application {
         }
     }
 
-    private boolean loadApplication() {
+    private void loadApplication () {
+        if (task != null)
+            return;
 
-        loadingLabel.setText("Connecting to the database...");
-        if (isDatabaseConnected()){
-            loadingLabel.setText("Database connected...");
-            try {
-                if (!DatabaseConnection.isTablesExist()){
-                    loadingLabel.setText("Setting up for the first use...");
-                    DatabaseConnection.setupDatabase();
-                    loadingLabel.setText("Loading GUI...");
-                    return true;
-                } else {
-                    loadingLabel.setText("Loading GUI...");
-                    return true;
+        task = new Task<>() {
+            public Boolean call() {
+                try {
+                    updateMessage("Connecting to the database...");
+                    Thread.sleep(1000);
+                    if (isDatabaseConnected()){
+                        updateMessage("Database connected...");
+                        Thread.sleep(1000);
+                        if (!DatabaseConnection.isTablesExist()){
+                            updateMessage("Setting up for the first use...");
+                            Thread.sleep(1000);
+                            DatabaseConnection.setupDatabase();
+                            updateMessage("Loading GUI...");
+                            Thread.sleep(1000);
+                            return true;
+                        } else {
+                            updateMessage("Loading GUI...");
+                            Thread.sleep(1000);
+                            return true;
+                        }
+                    } else {
+                        return false;
+                    }
+                } catch (Exception e){
+                    return false;
                 }
-            } catch (Exception e){
-                return false;
             }
-        } else {
-            return false;
-        }
+        };
+
+        executor.execute(task);
+
+        task.setOnScheduled(event -> {
+            loadingLabel.setText("Loading Application...");
+        });
+
+        task.setOnRunning(event -> {
+            loadingLabel.textProperty().bind(task.messageProperty());
+        });
+
+        task.setOnFailed(event -> {
+            loadingLabel.textProperty().unbind();
+            onError();
+            task = null;
+        });
+
+        task.setOnCancelled(event -> {
+            loadingLabel.textProperty().unbind();
+            onError();
+            task = null;
+        });
+
+        task.setOnSucceeded(event -> {
+            loadingLabel.textProperty().unbind();
+            if (task.getValue() == true)
+                ;
+            else {
+                onError();
+            }
+            task = null;
+        });
+
+    }
+
+    private void onError() {
+        Platform.runLater(() -> {
+            if (status == 1){
+
+            } else {
+                Alert alert = new Alert(AlertType.ERROR, "Couldn't load the application");
+                alert.showAndWait();
+    
+                Platform.exit();
+            };
+        });
     }
 
     public static void main(String[] args) {
