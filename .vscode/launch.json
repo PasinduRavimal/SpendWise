@@ -6,13 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "SpalshScreen",
-            "request": "launch",
-            "mainClass": "com.spendWise.SpalshScreen",
-            "projectName": "spendWise_23fb8022"
-        },
-        {
-            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}",
