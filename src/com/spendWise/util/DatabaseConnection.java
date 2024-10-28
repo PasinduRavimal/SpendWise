@@ -16,8 +16,8 @@ public class DatabaseConnection {
 
     private DatabaseConnection(){}
 
-    private static Connection connection;
-    private static Statement statement;
+    private volatile static Connection connection;
+    private volatile static Statement statement;
 
     /**
      * Connects to the database using the information in the databaseInfo.properties file.
@@ -25,7 +25,7 @@ public class DatabaseConnection {
      * @throws SQLException
      * @throws IOException
      */
-    public static Connection getConnection() throws SQLException, IOException {
+    public static synchronized Connection getConnection() throws SQLException, IOException {
         if (connection != null) {
             return connection;
         }
@@ -58,7 +58,7 @@ public class DatabaseConnection {
      * @return the {@code Connection} object to the database
      * @throws SQLException
      */
-    public static Connection getConnection(String url, String username, String password) throws SQLException {
+    public static synchronized Connection getConnection(String url, String username, String password) throws SQLException {
         
         if (connection != null && connection.getMetaData().getURL().equals(url)) {
             return connection;
@@ -71,18 +71,26 @@ public class DatabaseConnection {
         return connection;
     }
 
-    public static Statement getStatement() throws SQLException {
-        if (connection != null && statement != null){
+    public static synchronized Statement getStatement() throws UnsupportedOperationException, SQLException {
+        if (connection != null && statement != null && !statement.isClosed()){
+            if (statement.getConnection().equals(connection))
+                return statement;
+
+            statement.close();
+            statement = connection.createStatement();
+
             return statement;
+
         } else if (connection != null) {
             statement = connection.createStatement();
             return statement;
+
         } else {
-            throw new SQLException("No connetion has been established");
+            throw new UnsupportedOperationException("No connetion has been established");
         }
     }
 
-    public static boolean isTablesExist() throws SQLException, UnsupportedOperationException{
+    public static boolean isTablesExist() throws SQLException, UnsupportedOperationException {
         if (connection == null){
             throw new UnsupportedOperationException("Database is not connected");
         }
@@ -93,12 +101,14 @@ public class DatabaseConnection {
             statement.executeQuery("SELECT * FROM user");
         } catch (SQLException e){
             return false;
+        } finally {
+            statement.close();
         }
 
         return true;
     }
 
-    public static void setupDatabase() throws SQLException{
+    public static void setupDatabase() throws SQLException {
         getStatement();
 
         statement.addBatch("CREATE TABLE `spendwise`.`user` (" +
@@ -107,38 +117,31 @@ public class DatabaseConnection {
                         "  `password` VARCHAR(30) NOT NULL," +
                         "  PRIMARY KEY (`username`));");
         
-        statement.addBatch("CREATE TABLE `spendwise`.`accounttypes` (" +
-                        "  `accountID` INT NOT NULL AUTO_INCREMENT," +
-                        "  `accountName` VARCHAR(50) NOT NULL," +
-                        "  PRIMARY KEY (`accountID`)," +
-                        "  UNIQUE INDEX `accountName_UNIQUE` (`accountName` ASC) VISIBLE);");
+        statement.addBatch("CREATE TABLE `spendwise`.`accounttypes` (`accountID` INT NOT NULL AUTO_INCREMENT , `accountName` VARCHAR(50) NOT NULL , PRIMARY KEY (`accountID`), UNIQUE `accountName_UNIQUE` (`accountName`)) ENGINE = InnoDB;");
 
-        statement.addBatch("CREATE TABLE `spendwise`.`transaction` (" + 
-                        "  `transactionID` INT NOT NULL AUTO_INCREMENT," + 
-                        "  `username` VARCHAR(50) NOT NULL," + 
-                        "  `debitAccountID` INT NOT NULL," + 
-                        "  `creditAccountID` INT NOT NULL," + 
-                        "  `transactionTime` DATETIME NOT NULL," + 
-                        "  `amount` DOUBLE NOT NULL," + 
-                        "  PRIMARY KEY (`transactionID`)," + 
-                        "  INDEX `datetime` (`transactionTime` ASC) VISIBLE," + 
-                        "  INDEX `AccountsRelated` (`debitAccountID` ASC, `creditAccountID` ASC) VISIBLE," + 
-                        "  CONSTRAINT `FK_username`" + 
-                        "    FOREIGN KEY (`username`)" + 
-                        "    REFERENCES `spendwise`.`user` (`username`)" + 
-                        "    ON DELETE RESTRICT" + 
-                        "    ON UPDATE RESTRICT," + 
-                        "  CONSTRAINT `FK_debitaccounts`" + 
-                        "    FOREIGN KEY (`debitAccountID`)" + 
-                        "    REFERENCES `spendwise`.`accounttypes` (`accountID`)" + 
-                        "    ON DELETE RESTRICT" + 
-                        "    ON UPDATE RESTRICT," +
-                        "  CONSTRAINT `FK_creditaccounts`" + 
-                        "    FOREIGN KEY (`creditAccountID`)" + 
-                        "    REFERENCES `spendwise`.`accounttypes` (`accountID`)" + 
-                        "    ON DELETE RESTRICT" + 
-                        "    ON UPDATE RESTRICT);");
+        statement.addBatch("CREATE TABLE `spendwise`.`transaction` (`transactionID` INT NOT NULL AUTO_INCREMENT , `username` VARCHAR(50) NOT NULL , `debitAccountID` INT NOT NULL , `creditAccountID` INT NOT NULL , `transactionTime` DATETIME NOT NULL , `amount` DOUBLE NOT NULL , `description` VARCHAR(255) , PRIMARY KEY (`transactionID`)) ENGINE = InnoDB; ");
+
+        statement.addBatch("ALTER TABLE `transaction` ADD INDEX(`debitAccountID`, `creditAccountID`);");
+
+        statement.addBatch("ALTER TABLE `transaction` ADD CONSTRAINT `FK_username_user` FOREIGN KEY (`username`) REFERENCES `user`(`username`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
+
+        statement.addBatch("ALTER TABLE `transaction` ADD CONSTRAINT `FK_creditAccountID_account` FOREIGN KEY (`creditAccountID`) REFERENCES `accounttypes`(`accountID`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
+
+        statement.addBatch("ALTER TABLE `transaction` ADD CONSTRAINT `FK_debitAccountID_account` FOREIGN KEY (`debitAccountID`) REFERENCES `accounttypes`(`accountID`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
 
         statement.executeBatch();
+
+        statement.close();
+    }
+
+    // TODO: To be removed
+    public static void addDescriptionColumn() throws SQLException{
+        try {
+            DatabaseConnection.getStatement().executeQuery("SELECT description FROM transaction");
+        } catch (Exception e) {
+            DatabaseConnection.getStatement().executeUpdate("ALTER TABLE transaction ADD COLUMN description VARCHAR(255);");
+        } finally {
+            statement.close();
+        }
     }
 }
