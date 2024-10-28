@@ -72,7 +72,7 @@ public class DatabaseConnection {
     }
 
     public static synchronized Statement getStatement() throws UnsupportedOperationException, SQLException {
-        if (connection != null && statement != null){
+        if (connection != null && statement != null && !statement.isClosed()){
             if (statement.getConnection().equals(connection))
                 return statement;
 
@@ -101,9 +101,9 @@ public class DatabaseConnection {
             statement.executeQuery("SELECT * FROM user");
         } catch (SQLException e){
             return false;
+        } finally {
+            statement.close();
         }
-
-        statement.close();
 
         return true;
     }
@@ -132,5 +132,16 @@ public class DatabaseConnection {
         statement.executeBatch();
 
         statement.close();
+    }
+
+    // TODO: To be removed
+    public static void addDescriptionColumn() throws SQLException{
+        try {
+            DatabaseConnection.getStatement().executeQuery("SELECT description FROM transaction");
+        } catch (Exception e) {
+            DatabaseConnection.getStatement().executeUpdate("ALTER TABLE transaction ADD COLUMN description VARCHAR(255);");
+        } finally {
+            statement.close();
+        }
     }
 }

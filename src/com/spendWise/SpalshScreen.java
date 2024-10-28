@@ -84,19 +84,26 @@ public class SpalshScreen extends Application {
                 try {
                     updateMessage("Connecting to the database...");
                     Thread.sleep(1000);
+
                     if (isDatabaseConnected()){
                         updateMessage("Database connected...");
                         Thread.sleep(1000);
+
                         if (!DatabaseConnection.isTablesExist()){
                             updateMessage("Setting up for the first use...");
                             Thread.sleep(1000);
+
                             DatabaseConnection.setupDatabase();
                             updateMessage("Loading GUI...");
                             Thread.sleep(1000);
+
                             return true;
                         } else {
+                            // TODO: Remove this line
+                            DatabaseConnection.addDescriptionColumn();
                             updateMessage("Loading GUI...");
                             Thread.sleep(1000);
+
                             return true;
                         }
                     } else {
