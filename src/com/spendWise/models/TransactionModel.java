@@ -2,6 +2,10 @@ package com.spendWise.models;
 
 import java.sql.*;
 
+import org.mariadb.jdbc.export.ExceptionFactory.SqlExceptionFactory;
+
+import com.spendWise.util.DatabaseConnection;
+
 public class TransactionModel {
     private int transactionID;
     private String username;
@@ -19,7 +23,10 @@ public class TransactionModel {
         this.amount = amount;
         this.description = description;
     }
-
+    
+    public int getTransactionID() {
+        return transactionID;
+    }
 
     public String getUsername() {
         return username;
@@ -65,31 +72,14 @@ public class TransactionModel {
         return this.description = description;
     }
 
-    public void displayTransactionDetails() {
-        System.out.println("Transaction ID: " + transactionID);
-        System.out.println("Username: " + username);
-        System.out.println("Debiting Account ID: " + debitingAccountID);
-        System.out.println("Crediting Account ID: " + creditingAccountID);
-        System.out.println("Transaction Time: " + transactionTime);
-        System.out.println("Amount: " + amount);
-        System.out.println("Description: " + description);
-    }
-
-
     public boolean isValidateTransaction() {
         return amount > 0;
     }
 
 
-    public void saveTransaction() {
-        try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/spendwise", "root", "");
-            Statement stmt = conn.createStatement();
-            String query = "INSERT INTO transactions (username, debitingAccountID, creditingAccountID, transactionTime, amount, description) VALUES ('" + username + "', " + debitingAccountID + ", " + creditingAccountID + ", '" + transactionTime + "', " + amount + ", '" + description + "')";
-            stmt.executeUpdate(query);
-            System.out.println("Transaction Saved Successfully");
-        } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+    public void saveTransaction() throws SQLException {
+        Statement stmt = DatabaseConnection.getStatement();
+        String query = "INSERT INTO transactions (username, debitingAccountID, creditingAccountID, transactionTime, amount, description) VALUES ('" + username + "', " + debitingAccountID + ", " + creditingAccountID + ", '" + transactionTime + "', " + amount + ", '" + description + "')";
+        stmt.executeUpdate(query);    
     }
 }
