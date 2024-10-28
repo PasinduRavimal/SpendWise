@@ -86,7 +86,7 @@ public class DatabaseConnection {
             return statement;
 
         } else {
-            throw new UnsupportedOperationException("No connetion has been established");
+            throw new UnsupportedOperationException("No connection has been established");
         }
     }
 
