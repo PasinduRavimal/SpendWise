@@ -1,5 +1,6 @@
 package com.spendWise.models;
 
+import java.io.IOException;
 import java.sql.*;
 
 import org.mariadb.jdbc.export.ExceptionFactory.SqlExceptionFactory;
@@ -24,6 +25,16 @@ public class TransactionModel {
         this.description = description;
     }
     
+    public TransactionModel(int transactionID,String username, int debitingAccountID, int creditingAccountID, Timestamp transactionTime, double amount, String description){
+        this.transactionID = transactionID;
+        this.username = username;
+        this.debitingAccountID = debitingAccountID;
+        this.creditingAccountID = creditingAccountID;
+        this.transactionTime = transactionTime;
+        this.amount = amount;
+        this.description = description;
+    }
+
     public int getTransactionID() {
         return transactionID;
     }
@@ -72,8 +83,8 @@ public class TransactionModel {
         return this.description = description;
     }
 
-    public boolean isValidateTransaction() {
-        return amount > 0;
+    public boolean isValidTransaction() {
+        return amount > 0; //TODO: Compare balances using AccountModel.getBalance()
     }
 
 
@@ -82,4 +93,18 @@ public class TransactionModel {
         String query = "INSERT INTO transactions (username, debitingAccountID, creditingAccountID, transactionTime, amount, description) VALUES ('" + username + "', " + debitingAccountID + ", " + creditingAccountID + ", '" + transactionTime + "', " + amount + ", '" + description + "')";
         stmt.executeUpdate(query);    
     }
+
+    public void deleteTransaction() throws SQLException {
+        Statement stmt = DatabaseConnection.getStatement();
+        String query = "DELETE FROM transactions WHERE transactionID = " + transactionID;
+        stmt.executeUpdate(query);
+    }
+
+    public void updateTransaction() throws SQLException {
+        Statement stmt = DatabaseConnection.getStatement();
+        String query = "UPDATE transactions SET debitingAccountID = " + debitingAccountID + ", creditingAccountID = " + creditingAccountID + ", transactionTime = '" + transactionTime + "', amount = " + amount + ", description = '" + description + "' WHERE transactionID = " + transactionID;
+        stmt.executeUpdate(query);
+    }
+
+   
 }
