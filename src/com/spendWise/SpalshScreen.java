@@ -190,7 +190,7 @@ public class SpalshScreen extends Application {
                 loader.setLocation(this.getClass().getResource("views/signin.fxml"));
                 Parent root = loader.load();
                 Stage stage = new Stage();
-                primaryStage.setScene(new Scene(root));
+                stage.setScene(new Scene(root));
                 stage.setOnCloseRequest(event -> {
                     if (task != null)
                         task.cancel();
@@ -199,8 +199,8 @@ public class SpalshScreen extends Application {
                     Platform.exit();
                 });
                 stage.setTitle("Sign in");
-                // primaryStage.close();
-                //stage.show();
+                primaryStage.close();
+                stage.show();
 
                 stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 2);
                 stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
@@ -218,7 +218,7 @@ public class SpalshScreen extends Application {
                 loader.setLocation(this.getClass().getResource("views/signup.fxml"));
                 Parent root = loader.load();
                 Stage stage = new Stage();
-                primaryStage.setScene(new Scene(root));
+                stage.setScene(new Scene(root));
                 stage.setOnCloseRequest(event -> {
                     if (task != null)
                         task.cancel();
@@ -227,8 +227,8 @@ public class SpalshScreen extends Application {
                     Platform.exit();
                 });
                 stage.setTitle("Sign up");
-                //primaryStage.close();
-                //stage.show();
+                primaryStage.close();
+                stage.show();
 
                 stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 2);
                 stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
