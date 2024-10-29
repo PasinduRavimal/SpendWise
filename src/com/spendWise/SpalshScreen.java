@@ -12,6 +12,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.*;
 import javafx.concurrent.*;
+import javafx.fxml.FXMLLoader;
 
 import java.util.concurrent.*;
 
@@ -24,16 +25,19 @@ public class SpalshScreen extends Application {
     private Task<Boolean> task;
     private ExecutorService executor = Executors.newCachedThreadPool();
     private short status = 0;
+    private Stage primaryStage;
+    private Rectangle2D primScreenBounds;
 
     @Override
     public void start(Stage primaryStage) {
+
+        this.primaryStage = primaryStage;
 
         primaryStage.setOnCloseRequest(event -> {
             if (task != null)
                 task.cancel();
             
             executor.shutdown();
-            Platform.exit();
         });
 
         Bounds imageBounds = image.getBoundsInParent();
@@ -55,7 +59,7 @@ public class SpalshScreen extends Application {
         primaryStage.show();
 
         // Center on screen
-        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        primScreenBounds = Screen.getPrimary().getVisualBounds();
         primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
         primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
 
@@ -97,12 +101,25 @@ public class SpalshScreen extends Application {
                             updateMessage("Loading GUI...");
                             Thread.sleep(1000);
 
+                            loadSignup();
+
+                            return true;
+                        } else if (DatabaseConnection.isUsersExist()){
+                            // TODO: Remove this line
+                            DatabaseConnection.addDescriptionColumn();
+                            updateMessage("Loading GUI...");
+                            Thread.sleep(1000);
+
+                            loadSignin();
+
                             return true;
                         } else {
                             // TODO: Remove this line
                             DatabaseConnection.addDescriptionColumn();
                             updateMessage("Loading GUI...");
                             Thread.sleep(1000);
+
+                            loadSignup();
 
                             return true;
                         }
@@ -140,7 +157,7 @@ public class SpalshScreen extends Application {
         task.setOnSucceeded(event -> {
             loadingLabel.textProperty().unbind();
             if (task.getValue() == true)
-                ;
+            ;
             else {
                 onError();
             }
@@ -156,9 +173,69 @@ public class SpalshScreen extends Application {
             } else {
                 Alert alert = new Alert(AlertType.ERROR, "Couldn't load the application");
                 alert.showAndWait();
-    
+
+                if (task != null)
+                    task.cancel();
+            
+                executor.shutdown();
                 Platform.exit();
             };
+        });
+    }
+
+    private void loadSignin() {
+        Platform.runLater(() -> {
+            try{
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(this.getClass().getResource("views/signin.fxml"));
+                Parent root = loader.load();
+                Stage stage = new Stage();
+                primaryStage.setScene(new Scene(root));
+                stage.setOnCloseRequest(event -> {
+                    if (task != null)
+                        task.cancel();
+            
+                    executor.shutdown();
+                    Platform.exit();
+                });
+                stage.setTitle("Sign in");
+                // primaryStage.close();
+                //stage.show();
+
+                stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 2);
+                stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
+                
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void loadSignup() {
+        Platform.runLater(() -> {
+            try{
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(this.getClass().getResource("views/signup.fxml"));
+                Parent root = loader.load();
+                Stage stage = new Stage();
+                primaryStage.setScene(new Scene(root));
+                stage.setOnCloseRequest(event -> {
+                    if (task != null)
+                        task.cancel();
+            
+                    executor.shutdown();
+                    Platform.exit();
+                });
+                stage.setTitle("Sign up");
+                //primaryStage.close();
+                //stage.show();
+
+                stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 2);
+                stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
+                
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         });
     }
 

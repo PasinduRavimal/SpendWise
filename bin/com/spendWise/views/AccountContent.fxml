@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitMenuButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AccountPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label id="LabelElectricityAccountTitle" alignment="CENTER" layoutX="54.0" layoutY="14.0" text="Electricity Expenses Account for the Month of September of 2024">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label id="LabelMakeExpenses" layoutX="24.0" layoutY="300.0" text="Expenses To Make :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label id="LabelAlreadyMadeExpenses" layoutX="24.0" layoutY="328.0" text="Expenses Already Made :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label id="LabelTotalExpenses" layoutX="24.0" layoutY="357.0" text="Total Expenses :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <SplitMenuButton id="SplitButtonChooseMonth" layoutX="433.0" layoutY="316.0" mnemonicParsing="false" text="Choose Month">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </SplitMenuButton>
+      <TableView layoutX="58.0" layoutY="51.0" prefHeight="238.0" prefWidth="492.0" style="-fx-background-color: #e6b3ff;">
+        <columns>
+          <TableColumn id="DebitColumn" prefWidth="246.4000244140625" text="Debit" />
+          <TableColumn id="CreditColumn" minWidth="0.0" prefWidth="243.20001220703125" text="Credit" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

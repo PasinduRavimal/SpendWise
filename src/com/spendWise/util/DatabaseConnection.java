@@ -108,6 +108,27 @@ public class DatabaseConnection {
         return true;
     }
 
+    public static boolean isUsersExist() throws SQLException, UnsupportedOperationException {
+        if (connection == null){
+            throw new UnsupportedOperationException("Database is not connected");
+        }
+
+        getStatement();
+
+        try{
+            ResultSet rs = statement.executeQuery("SELECT * FROM user");
+            if (rs.getMetaData().getColumnCount() == 0)
+                return false;
+            
+            return true;
+            
+        } catch (SQLException e){
+            return false;
+        } finally {
+            statement.close();
+        }
+    }
+
     public static void setupDatabase() throws SQLException {
         getStatement();
 
