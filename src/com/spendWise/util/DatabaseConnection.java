@@ -117,8 +117,9 @@ public class DatabaseConnection {
 
         try{
             ResultSet rs = statement.executeQuery("SELECT * FROM user");
-            if (rs.getMetaData().getColumnCount() == 0)
+            if (!rs.next()){
                 return false;
+            }
             
             return true;
             
