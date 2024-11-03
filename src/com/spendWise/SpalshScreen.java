@@ -16,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 
 import java.util.concurrent.*;
 
+import com.spendWise.models.UserAccount;
 import com.spendWise.util.*;
 
 public class SpalshScreen extends Application {
@@ -93,7 +94,7 @@ public class SpalshScreen extends Application {
                         updateMessage("Database connected...");
                         Thread.sleep(1000);
 
-                        if (!DatabaseConnection.isTablesExist()){
+                        if (!DatabaseConnection.doTablesExist()){
                             updateMessage("Setting up for the first use...");
                             Thread.sleep(1000);
 
@@ -104,9 +105,7 @@ public class SpalshScreen extends Application {
                             loadSignup();
 
                             return true;
-                        } else if (DatabaseConnection.isUsersExist()){
-                            // TODO: Remove this line
-                            DatabaseConnection.addDescriptionColumn();
+                        } else if (UserAccount.doUsersExist()){
                             updateMessage("Loading GUI...");
                             Thread.sleep(1000);
 
@@ -114,8 +113,6 @@ public class SpalshScreen extends Application {
 
                             return true;
                         } else {
-                            // TODO: Remove this line
-                            DatabaseConnection.addDescriptionColumn();
                             updateMessage("Loading GUI...");
                             Thread.sleep(1000);
 
