@@ -4,9 +4,7 @@ import java.sql.*;
 
 import com.spendWise.util.*;
 
-public interface UserAccount {
-
-    public UserAccount getUserAccount(String username, String password) throws SQLException;
+public abstract class UserAccount {
 
     public static boolean doUsersExist() throws SQLException {
         
@@ -25,42 +23,37 @@ public interface UserAccount {
         }
     }
 
-    public static boolean createUserAccount(String userName, String displayName, String password) throws SQLException{
-        try{
-            DatabaseConnection.getConnection();
-            String query = "INSERT INTO Users (username, displayName, password) VALUES ('"+userName+"', '"+displayName+"', '"+password+"')";
-            DatabaseConnection.getStatement().executeUpdate(query);
+    public static boolean signup(String username, String displayName, String password) {
+        try {
+            UserAccountModel user = UserAccountModel.newUserAccount(username, displayName, password);
+            user.saveToDatabase();
             return true;
-
-        } catch(Exception e){
+        } catch (SQLException e){
             return false;
-        } finally{
-            DatabaseConnection.getStatement().close();
+        }
+
+    }
+
+    public static UserAccount login(String username, String password) {
+        try {
+            return UserAccountModel.getUserAccount(username, password);
+        } catch (SQLException e){
+            return null;
         }
     }
 
-    public static boolean updateUserAccount(String username, String newDisplayName) throws SQLException{
-        try{
+    public static boolean isUserExist(String username) throws SQLException {
+        
+        try {
             DatabaseConnection.getConnection();
-            String query = "UPDATE Users SET displayName = '"+newDisplayName+"' WHERE username = '"+username+"'";
-            DatabaseConnection.getStatement().executeUpdate(query);
+            String query = "SELECT * FROM Users WHERE username = ?";
+            ResultSet rs = DatabaseConnection.getPreparedStatement(query, username).executeQuery();
+            if (!rs.next()){
+                return false;
+            }
             return true;
 
-        } catch(Exception e){
-            return false;
-        } finally{
-            DatabaseConnection.getStatement().close();
-        }
-    }
-
-    public static boolean deleteUserAccount(String username) throws SQLException{
-        try{
-            DatabaseConnection.getConnection();
-            String query = "DELETE FROM Users WHERE username = '"+username+"'";
-            DatabaseConnection.getStatement().executeUpdate(query);
-            return true;
-            
-        } catch(Exception e){
+        } catch (Exception e){
             return false;
         } finally {
             DatabaseConnection.getStatement().close();

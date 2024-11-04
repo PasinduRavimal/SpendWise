@@ -12,10 +12,10 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.*;
 import javafx.concurrent.*;
-import javafx.fxml.FXMLLoader;
 
 import java.util.concurrent.*;
 
+import com.spendWise.controllers.ScreenController;
 import com.spendWise.models.UserAccount;
 import com.spendWise.util.*;
 
@@ -102,6 +102,7 @@ public class SpalshScreen extends Application {
                             updateMessage("Loading GUI...");
                             Thread.sleep(1000);
 
+                            ScreenController.getInstance();
                             loadSignup();
 
                             return true;
@@ -109,6 +110,7 @@ public class SpalshScreen extends Application {
                             updateMessage("Loading GUI...");
                             Thread.sleep(1000);
 
+                            ScreenController.getInstance();
                             loadSignin();
 
                             return true;
@@ -124,6 +126,7 @@ public class SpalshScreen extends Application {
                         return false;
                     }
                 } catch (Exception e){
+                    e.printStackTrace();
                     return false;
                 }
             }
@@ -183,11 +186,9 @@ public class SpalshScreen extends Application {
     private void loadSignin() {
         Platform.runLater(() -> {
             try{
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(this.getClass().getResource("views/signin.fxml"));
-                Parent root = loader.load();
-                Stage stage = new Stage();
-                stage.setScene(new Scene(root));
+                ScreenController.getInstance();
+                ScreenController.activate("Signin");
+                Stage stage = ScreenController.stage;
                 stage.setOnCloseRequest(event -> {
                     if (task != null)
                         task.cancel();
@@ -211,11 +212,9 @@ public class SpalshScreen extends Application {
     private void loadSignup() {
         Platform.runLater(() -> {
             try{
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(this.getClass().getResource("views/signup.fxml"));
-                Parent root = loader.load();
-                Stage stage = new Stage();
-                stage.setScene(new Scene(root));
+                ScreenController.getInstance();
+                ScreenController.activate("Signup");
+                Stage stage = ScreenController.stage;
                 stage.setOnCloseRequest(event -> {
                     if (task != null)
                         task.cancel();
@@ -223,7 +222,7 @@ public class SpalshScreen extends Application {
                     executor.shutdown();
                     Platform.exit();
                 });
-                stage.setTitle("Sign up");
+                stage.setTitle("Sign in");
                 primaryStage.close();
                 stage.show();
 

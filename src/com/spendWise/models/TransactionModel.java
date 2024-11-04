@@ -1,9 +1,6 @@
 package com.spendWise.models;
 
-import java.io.IOException;
 import java.sql.*;
-
-import org.mariadb.jdbc.export.ExceptionFactory.SqlExceptionFactory;
 
 import com.spendWise.util.DatabaseConnection;
 

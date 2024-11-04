@@ -110,8 +110,7 @@ public class DatabaseConnection {
         getStatement();
 
         try{
-            ResultSet rs = statement.executeQuery("SELECT * FROM users");
-            
+            statement.executeQuery("SELECT * FROM users");
             return true;
             
         } catch (SQLException e){
