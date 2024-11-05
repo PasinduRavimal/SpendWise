@@ -14,12 +14,17 @@ public class ScreenController {
     public static Stage stage = new Stage();
     private static Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
 
-    public static void getInstance() {
+    public static synchronized void getInstance() {
+        if (!screenMap.isEmpty()) {
+            return;
+        }
+
         try {
             Parent root = FXMLLoader.load(ScreenController.class.getResource("../views/signin.fxml"));
             screenMap.put("Signin", new Scene(root));
             root = FXMLLoader.load(ScreenController.class.getResource("../views/signup.fxml"));
             screenMap.put("Signup", new Scene(root));
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -102,7 +102,6 @@ public class SpalshScreen extends Application {
                             updateMessage("Loading GUI...");
                             Thread.sleep(1000);
 
-                            ScreenController.getInstance();
                             loadSignup();
 
                             return true;
@@ -110,7 +109,6 @@ public class SpalshScreen extends Application {
                             updateMessage("Loading GUI...");
                             Thread.sleep(1000);
 
-                            ScreenController.getInstance();
                             loadSignin();
 
                             return true;
@@ -222,7 +220,7 @@ public class SpalshScreen extends Application {
                     executor.shutdown();
                     Platform.exit();
                 });
-                stage.setTitle("Sign in");
+                stage.setTitle("Sign up");
                 primaryStage.close();
                 stage.show();
 

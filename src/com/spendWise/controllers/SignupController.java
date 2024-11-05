@@ -67,6 +67,16 @@ public class SignupController implements Initializable {
                 }
             }
         });
+
+        loginLink.setOnAction(event -> {
+            try {
+                ScreenController.activate("Signin");
+                ScreenController.stage.setTitle("Sign in");
+                ScreenController.centerStage();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 }
