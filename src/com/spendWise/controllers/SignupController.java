@@ -1,12 +1,15 @@
 package com.spendWise.controllers;
 
+import java.io.IOException;
 import java.net.*;
+import java.sql.SQLException;
 import java.util.*;
 
 import com.spendWise.models.UserAccount;
 
 import javafx.fxml.*;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 
 public class SignupController implements Initializable {
 
@@ -53,29 +56,47 @@ public class SignupController implements Initializable {
                 alert.setContentText("Please accept the terms and conditions.");
                 alert.showAndWait();
             } else {
-                if (UserAccount.signup(username, displayName, password)) {
-                    try {
+                try {
+                    if (UserAccount.signup(username, displayName, password)) {
+                        UserAccount.logout();
                         ScreenController.activate("Signin");
                         ScreenController.stage.setTitle("Sign in");
                         ScreenController.centerStage();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Couldn't sign up");
+                        alert.showAndWait();
                     }
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "Couldn't sign up");
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                    Alert alert = new Alert(AlertType.ERROR, e.getMessage());
                     alert.showAndWait();
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                    Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+                    alert.showAndWait();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+                    alert.showAndWait();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+                    alert.showAndWait();
+                } finally {
+                    usernameField.clear();
+                    passwordField.clear();
+                    confirmPasswordField.clear();
+                    displayNameField.clear();
+                    tandcCheckBox.setSelected(false);
                 }
+
             }
         });
 
         loginLink.setOnAction(event -> {
-            try {
-                ScreenController.activate("Signin");
-                ScreenController.stage.setTitle("Sign in");
-                ScreenController.centerStage();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ScreenController.activate("Signin");
+            ScreenController.stage.setTitle("Sign in");
+            ScreenController.centerStage();
         });
     }
 

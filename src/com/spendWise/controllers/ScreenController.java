@@ -1,7 +1,9 @@
 package com.spendWise.controllers;
 
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -10,23 +12,30 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class ScreenController {
-    private static ConcurrentHashMap<String, Scene> screenMap = new ConcurrentHashMap<String, Scene>();
+    private static ConcurrentHashMap<String, Scene> screenMap;
     public static Stage stage = new Stage();
     private static Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
 
-    public static synchronized void getInstance() {
-        if (!screenMap.isEmpty()) {
+    public static synchronized void getInstance() throws IOException {
+        if (screenMap != null) {
             return;
         }
+
+        screenMap = new ConcurrentHashMap<>();
+        stage.setOnCloseRequest(event -> {
+            Platform.exit();
+        });
 
         try {
             Parent root = FXMLLoader.load(ScreenController.class.getResource("../views/signin.fxml"));
             screenMap.put("Signin", new Scene(root));
             root = FXMLLoader.load(ScreenController.class.getResource("../views/signup.fxml"));
             screenMap.put("Signup", new Scene(root));
+            root = FXMLLoader.load(ScreenController.class.getResource("../views/DashboardContent.fxml"));
+            screenMap.put("Dashboard", new Scene(root));
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new IOException("Cannot access critical files.");
         }
     }
 

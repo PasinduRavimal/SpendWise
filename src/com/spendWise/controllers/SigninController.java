@@ -1,12 +1,15 @@
 package com.spendWise.controllers;
 
+import java.io.IOException;
 import java.net.*;
+import java.sql.SQLException;
 import java.util.*;
 
 import com.spendWise.models.UserAccount;
 
 import javafx.fxml.*;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 
 public class SigninController implements Initializable {
 
@@ -24,7 +27,7 @@ public class SigninController implements Initializable {
         signinButton.setOnAction(event -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
-        
+
             if (username.isEmpty() || password.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -32,30 +35,44 @@ public class SigninController implements Initializable {
                 alert.setContentText("Please fill all the fields.");
                 alert.showAndWait();
             } else {
-                UserAccount userAccount = UserAccount.login(username, password);
-                if (userAccount != null) {
-                    try {
-                    ScreenController.activate("Signup");
-                    ScreenController.stage.setTitle("Sign up");
-                    ScreenController.centerStage();
-                    } catch (Exception e) {
-                    e.printStackTrace();
+                try {
+                    UserAccount userAccount = UserAccount.login(username, password);
+                    if (userAccount != null) {
+                        ScreenController.activate("Signup");
+                        ScreenController.stage.setTitle("Sign up");
+                        ScreenController.centerStage();
+
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Username or password is incorrect.");
+                        alert.showAndWait();
                     }
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR,"Username or password is incorrect.");
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                    Alert alert = new Alert(AlertType.ERROR, e.getMessage());
                     alert.showAndWait();
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                    Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+                    alert.showAndWait();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+                    alert.showAndWait();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+                    alert.showAndWait();
+                } finally {
+                    usernameField.clear();
+                    passwordField.clear();
                 }
             }
-        
+
         });
         signUpLink.setOnAction(event -> {
-            try {
-                ScreenController.activate("Signup");
-                ScreenController.stage.setTitle("Sign up");
-                ScreenController.centerStage();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ScreenController.activate("Signup");
+            ScreenController.stage.setTitle("Sign up");
+            ScreenController.centerStage();
         });
     }
 

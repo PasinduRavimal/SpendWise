@@ -13,6 +13,8 @@ import javafx.scene.text.Text;
 import javafx.stage.*;
 import javafx.concurrent.*;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.concurrent.*;
 
 import com.spendWise.controllers.ScreenController;
@@ -67,16 +69,15 @@ public class SpalshScreen extends Application {
         loadApplication();
     }
 
-    private boolean isDatabaseConnected(){
+    private boolean isDatabaseConnected() throws IOException, SQLException {
         try {
             if (DatabaseConnection.getConnection() != null){
                 return true;
             };
             return false;
 
-        } catch (Exception e){
-            e.printStackTrace();
-            return false;
+        } catch (IOException e) {
+            throw new IOException("Need permission to access file system.");
         }
     }
 
@@ -88,33 +89,26 @@ public class SpalshScreen extends Application {
             public Boolean call() {
                 try {
                     updateMessage("Connecting to the database...");
-                    Thread.sleep(1000);
 
                     if (isDatabaseConnected()){
                         updateMessage("Database connected...");
-                        Thread.sleep(1000);
 
                         if (!DatabaseConnection.doTablesExist()){
                             updateMessage("Setting up for the first use...");
-                            Thread.sleep(1000);
 
                             DatabaseConnection.setupDatabase();
                             updateMessage("Loading GUI...");
-                            Thread.sleep(1000);
 
                             loadSignup();
 
                             return true;
                         } else if (UserAccount.doUsersExist()){
                             updateMessage("Loading GUI...");
-                            Thread.sleep(1000);
-
                             loadSignin();
 
                             return true;
                         } else {
                             updateMessage("Loading GUI...");
-                            Thread.sleep(1000);
 
                             loadSignup();
 
@@ -123,9 +117,15 @@ public class SpalshScreen extends Application {
                     } else {
                         return false;
                     }
-                } catch (Exception e){
+                } catch (UnsupportedOperationException e) {
                     e.printStackTrace();
-                    return false;
+                    throw new RuntimeException(e.getMessage());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e.getMessage());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e.getMessage());
                 }
             }
         };
@@ -142,7 +142,7 @@ public class SpalshScreen extends Application {
 
         task.setOnFailed(event -> {
             loadingLabel.textProperty().unbind();
-            onError();
+            onError(task.getException().getMessage());
             task = null;
         });
 
@@ -167,9 +167,26 @@ public class SpalshScreen extends Application {
     private void onError() {
         Platform.runLater(() -> {
             if (status == 1){
-
+                ;
             } else {
                 Alert alert = new Alert(AlertType.ERROR, "Couldn't load the application");
+                alert.showAndWait();
+
+                if (task != null)
+                    task.cancel();
+            
+                executor.shutdown();
+                Platform.exit();
+            };
+        });
+    }
+
+    private void onError(String message) {
+        Platform.runLater(() -> {
+            if (status == 1){
+                ;
+            } else {
+                Alert alert = new Alert(AlertType.ERROR, message);
                 alert.showAndWait();
 
                 if (task != null)
@@ -201,7 +218,9 @@ public class SpalshScreen extends Application {
                 stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 2);
                 stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
                 
-            } catch (Exception e){
+            } catch (IOException e){
+                Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+                alert.showAndWait();
                 e.printStackTrace();
             }
         });
@@ -227,7 +246,9 @@ public class SpalshScreen extends Application {
                 stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 2);
                 stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
                 
-            } catch (Exception e){
+            } catch (IOException e){
+                Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+                alert.showAndWait();
                 e.printStackTrace();
             }
         });
