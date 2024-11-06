@@ -9,12 +9,13 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <SplitPane dividerPositions="0.29797979797979796" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" prefHeight="400.0" prefWidth="800.0" scaleShape="false" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
   <items>
-    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="100.0" prefHeight="400.0" prefWidth="200.0">
+      <Pane prefHeight="400.0" prefWidth="800.0">
          <children>
             <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="200.0">
                <children>
@@ -49,7 +50,8 @@
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
                                       </content>
                                     </ScrollPane>
-                                 </children></AnchorPane>
+                                 </children>
+                              </AnchorPane>
                         </content>
                       </TitledPane>
                       <TitledPane animated="false" collapsible="false" expanded="false" text="Settings" />
@@ -63,7 +65,8 @@
                   </BorderPane>
                </children>
             </VBox>
-         </children></AnchorPane>
+         </children>
+      </Pane>
     <AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" />
   </items>
    <cursor>
