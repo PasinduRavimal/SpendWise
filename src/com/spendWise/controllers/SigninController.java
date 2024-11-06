@@ -38,8 +38,8 @@ public class SigninController implements Initializable {
                 try {
                     UserAccount userAccount = UserAccount.login(username, password);
                     if (userAccount != null) {
-                        ScreenController.activate("Signup");
-                        ScreenController.stage.setTitle("Sign up");
+                        ScreenController.activate("Home");
+                        ScreenController.stage.setTitle("SpendWise");
                         ScreenController.centerStage();
 
                     } else {

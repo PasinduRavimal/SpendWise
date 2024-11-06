@@ -31,8 +31,8 @@ public class ScreenController {
             screenMap.put("Signin", new Scene(root));
             root = FXMLLoader.load(ScreenController.class.getResource("../views/signup.fxml"));
             screenMap.put("Signup", new Scene(root));
-            root = FXMLLoader.load(ScreenController.class.getResource("../views/DashboardContent.fxml"));
-            screenMap.put("Dashboard", new Scene(root));
+            root = FXMLLoader.load(ScreenController.class.getResource("../views/home.fxml"));
+            screenMap.put("Home", new Scene(root));
 
         } catch (IOException e) {
             throw new IOException("Cannot access critical files.");
