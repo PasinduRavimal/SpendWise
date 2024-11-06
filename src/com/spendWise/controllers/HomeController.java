@@ -55,7 +55,7 @@ public class HomeController implements Initializable {
             contentMap.put("dashboard", FXMLLoader.load(getClass().getResource("../views/DashboardContent.fxml")));
             contentMap.put("accounts", new Pane());
             contentMap.put("settings", FXMLLoader.load(getClass().getResource("../views/SettingsContent.fxml")));
-            contentMap.put("help", new Pane());
+            contentMap.put("help", FXMLLoader.load(getClass().getResource("../views/HelpContent.fxml")));
             } catch (IOException e){
                 e.printStackTrace();
                 Alert alert = new Alert(Alert.AlertType.ERROR, "An error occurred while loading the content");
