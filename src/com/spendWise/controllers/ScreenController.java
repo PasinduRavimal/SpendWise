@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 
 public class ScreenController {
     private static ConcurrentHashMap<String, Scene> screenMap;
-    public static Stage stage = new Stage();
+    private static Stage stage = new Stage();
     private static Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
 
     public static synchronized void getInstance() throws IOException {
@@ -53,6 +53,10 @@ public class ScreenController {
         stage.show();
         stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 2);
         stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
+    }
+
+    public static Stage getStage() {
+        return stage;
     }
 
 }

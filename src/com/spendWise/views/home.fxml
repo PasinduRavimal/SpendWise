@@ -60,7 +60,7 @@
                   </Accordion>
                   <BorderPane maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="225.0" prefWidth="200.0">
                      <bottom>
-                        <TitledPane animated="false" collapsible="false" expanded="false" text="Logout" textAlignment="CENTER" BorderPane.alignment="CENTER" />
+                        <TitledPane fx:id="logoutPane" animated="false" collapsible="false" expanded="false" text="Logout" textAlignment="CENTER" BorderPane.alignment="CENTER" />
                      </bottom>
                   </BorderPane>
                </children>

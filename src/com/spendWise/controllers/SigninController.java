@@ -39,7 +39,7 @@ public class SigninController implements Initializable {
                     UserAccount userAccount = UserAccount.login(username, password);
                     if (userAccount != null) {
                         ScreenController.activate("Home");
-                        ScreenController.stage.setTitle("SpendWise");
+                        ScreenController.getStage().setTitle("SpendWise");
                         ScreenController.centerStage();
 
                     } else {
@@ -71,7 +71,7 @@ public class SigninController implements Initializable {
         });
         signUpLink.setOnAction(event -> {
             ScreenController.activate("Signup");
-            ScreenController.stage.setTitle("Sign up");
+            ScreenController.getStage().setTitle("Sign up");
             ScreenController.centerStage();
         });
     }

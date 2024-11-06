@@ -60,7 +60,7 @@ public class SignupController implements Initializable {
                     if (UserAccount.signup(username, displayName, password)) {
                         UserAccount.logout();
                         ScreenController.activate("Signin");
-                        ScreenController.stage.setTitle("Sign in");
+                        ScreenController.getStage().setTitle("Sign in");
                         ScreenController.centerStage();
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR, "Couldn't sign up");
@@ -95,7 +95,7 @@ public class SignupController implements Initializable {
 
         loginLink.setOnAction(event -> {
             ScreenController.activate("Signin");
-            ScreenController.stage.setTitle("Sign in");
+            ScreenController.getStage().setTitle("Sign in");
             ScreenController.centerStage();
         });
     }

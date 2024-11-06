@@ -203,7 +203,7 @@ public class SpalshScreen extends Application {
             try{
                 ScreenController.getInstance();
                 ScreenController.activate("Signin");
-                Stage stage = ScreenController.stage;
+                Stage stage = ScreenController.getStage();
                 stage.setOnCloseRequest(event -> {
                     if (task != null)
                         task.cancel();
@@ -231,7 +231,7 @@ public class SpalshScreen extends Application {
             try{
                 ScreenController.getInstance();
                 ScreenController.activate("Signup");
-                Stage stage = ScreenController.stage;
+                Stage stage = ScreenController.getStage();
                 stage.setOnCloseRequest(event -> {
                     if (task != null)
                         task.cancel();
