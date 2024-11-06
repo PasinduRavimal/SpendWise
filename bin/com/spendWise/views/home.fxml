@@ -67,7 +67,7 @@
             </VBox>
          </children>
       </Pane>
-    <AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" />
+    <Pane fx:id="contentPane" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" />
   </items>
    <cursor>
       <Cursor fx:constant="DEFAULT" />
