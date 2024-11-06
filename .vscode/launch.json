@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Dashboard",
+            "request": "launch",
+            "mainClass": "com.spendWise.Dashboard",
+            "projectName": "spendwise_d1c2559c"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}",

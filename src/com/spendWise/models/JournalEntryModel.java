@@ -1,5 +1,6 @@
 package com.spendWise.models;
 
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
 
@@ -61,7 +62,7 @@ public class JournalEntryModel {
     }
 
     // Method to save journal entry to database
-    public void saveEntry() throws SQLException {
+    public void saveEntry() throws SQLException, IOException {
         String query = "INSERT INTO journal_entries (transactionID, username, entryDate, description, accountID, amount, isDebit) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -101,7 +102,7 @@ public class JournalEntryModel {
     }
 
     // Method to create corresponding debit and credit entries for a transaction
-    public static void createJournalEntries(TransactionModel transaction) throws SQLException {
+    public static void createJournalEntries(TransactionModel transaction) throws SQLException,IOException {
         String username = transaction.getUsername();
         int transactionID = transaction.getTransactionID();
         double amount = transaction.getAmount();

@@ -16,13 +16,13 @@
          <children>
             <Pane layoutY="3.0" prefHeight="400.0" prefWidth="600.0">
                <children>
-                  <Label layoutX="115.0" layoutY="94.0" text="Username" />
-                  <TextField fx:id="usernameField" layoutX="280.0" layoutY="94.0" prefHeight="30.0" prefWidth="230.0" />
+                  <Label layoutX="115.0" layoutY="120.0" text="Username" />
+                  <TextField fx:id="usernameField" layoutX="280.0" layoutY="120.0" prefHeight="30.0" prefWidth="230.0" />
                   <Label layoutX="115.0" layoutY="186.0" text="Enter password" />
                   <PasswordField fx:id="passwordField" layoutX="280.0" layoutY="186.0" prefHeight="30.0" prefWidth="230.0" />
-                  <Button fx:id="signinButton" layoutX="190.0" layoutY="310.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="218.0" text="Sign in" />
-                  <Hyperlink layoutX="336.0" layoutY="325.0" text="Sign up here" />
-                  <Text layoutX="170.0" layoutY="371.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Don't have an account ?" />
+                  <Button fx:id="signinButton" layoutX="190.0" layoutY="270.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="218.0" text="Sign in" />
+                  <Hyperlink fx:id="signUpLink" layoutX="325.0" layoutY="320.0" text="Sign up here" />
+                  <Text layoutX="170.0" layoutY="339.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Don't have an account ?" />
                </children>
             </Pane>
          </children>
