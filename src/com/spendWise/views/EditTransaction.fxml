@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane id="EditTransactionPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: BEFFC8;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ChoiceBox id="ChiceBoxSelectDebetAccount" layoutX="66.0" layoutY="58.0" prefHeight="35.0" prefWidth="446.0" />
+      <Label id="LabelSelectDebitAccount" layoutX="66.0" layoutY="29.0" text="Select the Debiting Account">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Text id="TextCashAccount" layoutX="78.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cash Account" wrappingWidth="106.61090087890625" />
+      <Label id="LabelSelectCredictAccount" layoutX="66.0" layoutY="113.0" prefHeight="20.0" prefWidth="222.0" text="Select the Crediting Account">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ChoiceBox id="ChiceBoxSelectCreditAccount" layoutX="65.0" layoutY="145.0" prefHeight="35.0" prefWidth="446.0" />
+      <Text id="TextElectricityAccount" layoutX="78.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Electricity Account" wrappingWidth="106.61090087890625" />
+      <Label id="LabelSelectTransactionDate" layoutX="66.0" layoutY="200.0" prefHeight="20.0" prefWidth="222.0" text="Select the Transaction Date">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <DatePicker id="DatePickerSelectTransactionDate" layoutX="66.0" layoutY="233.0" prefHeight="35.0" prefWidth="446.0" />
+      <Text id="TextTransactionDate" layoutX="79.0" layoutY="255.0" strokeType="OUTSIDE" strokeWidth="0.0" text="08/17/2023" wrappingWidth="106.61090087890625" />
+      <Text id="TextDateType" fill="#636161" layoutX="78.0" layoutY="287.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MM/DD/YYYY" wrappingWidth="106.61090087890625">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Text>
+      <Button id="ButtonEditTransaction" layoutX="130.0" layoutY="320.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: #ff9900;" text="Edit Transaction" />
+      <Button id="ButtonDeleteTransaction" layoutX="320.0" layoutY="320.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: #ff9900;" text="Delete Transaction" />
+   </children>
+</AnchorPane>
