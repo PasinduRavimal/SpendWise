@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.*;
 
 public class HomeController implements Initializable {
@@ -61,10 +62,20 @@ public class HomeController implements Initializable {
         Platform.runLater(() -> {
             try {
                 AnchorPane anchorPane = (AnchorPane) accountsStaticPane.getContent();
+                VBox vbox = new VBox();
+                vbox.setPrefHeight(180);
+                vbox.setPrefWidth(200);
                 for (Account account : Account.getAccountsList()){
                     System.out.println(account.getAccountName());
-                    anchorPane.getChildren().add(new Button(account.getAccountName()));
+                    TitledPane titledPane = new TitledPane(account.getAccountName(), null);
+                    titledPane.setCollapsible(false);
+                    titledPane.setExpanded(false);
+                    titledPane.setMaxWidth(190);
+                    vbox.getChildren().add(titledPane);
                 }
+                ScrollPane scrollPane = new ScrollPane(vbox);
+                scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+                anchorPane.getChildren().add(scrollPane);
             } catch (Exception e) {
                 e.printStackTrace();
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());

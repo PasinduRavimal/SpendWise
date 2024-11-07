@@ -42,17 +42,15 @@
                       <TitledPane fx:id="dashboardPane" animated="false" collapsible="false" expanded="false" text="Dashboard" />
                         <TitledPane fx:id="accountsPane" animated="false" text="Accounts">
                            <content>
-                              <AnchorPane prefHeight="230.0" prefWidth="198.0">
-                                 <padding>
-                                    <Insets left="15.0" />
-                                 </padding></AnchorPane>
+                              <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="190.0" prefWidth="190.0" maxWidth="190.0">
+                                 </AnchorPane>
                            </content>
                         </TitledPane>
                       <TitledPane fx:id="settingsPane" animated="false" collapsible="false" expanded="false" text="Settings" />
                         <TitledPane fx:id="helpPane" animated="false" collapsible="false" expanded="false" text="Help" />
                     </panes>
                   </Accordion>
-                  <BorderPane maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="225.0" prefWidth="200.0">
+                  <BorderPane maxHeight="-Infinity" prefHeight="225.0" prefWidth="200.0">
                      <bottom>
                         <TitledPane fx:id="logoutPane" animated="false" collapsible="false" expanded="false" text="Logout" textAlignment="CENTER" BorderPane.alignment="CENTER" />
                      </bottom>
