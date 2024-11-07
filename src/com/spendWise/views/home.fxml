@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
@@ -13,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.29797979797979796" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" prefHeight="400.0" prefWidth="800.0" scaleShape="false" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.spendWise.controllers.HomeController">
+<SplitPane dividerPositions="0.29797979797979796" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" prefHeight="400.0" prefWidth="800.0" scaleShape="false" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.spendWise.controllers.HomeController">
   <items>
       <Pane prefHeight="400.0" prefWidth="800.0">
          <children>
@@ -41,19 +40,14 @@
                   <Accordion>
                     <panes>
                       <TitledPane fx:id="dashboardPane" animated="false" collapsible="false" expanded="false" text="Dashboard" />
-                      <TitledPane fx:id="accountsPane" animated="false" text="Accounts">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <ScrollPane prefHeight="200.0" prefWidth="200.0">
-                                      <content>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-                                      </content>
-                                    </ScrollPane>
-                                 </children>
-                              </AnchorPane>
-                        </content>
-                      </TitledPane>
+                        <TitledPane fx:id="accountsPane" animated="false" text="Accounts">
+                           <content>
+                              <AnchorPane prefHeight="230.0" prefWidth="198.0">
+                                 <padding>
+                                    <Insets left="15.0" />
+                                 </padding></AnchorPane>
+                           </content>
+                        </TitledPane>
                       <TitledPane fx:id="settingsPane" animated="false" collapsible="false" expanded="false" text="Settings" />
                         <TitledPane fx:id="helpPane" animated="false" collapsible="false" expanded="false" text="Help" />
                     </panes>
@@ -62,6 +56,9 @@
                      <bottom>
                         <TitledPane fx:id="logoutPane" animated="false" collapsible="false" expanded="false" text="Logout" textAlignment="CENTER" BorderPane.alignment="CENTER" />
                      </bottom>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
                   </BorderPane>
                </children>
             </VBox>

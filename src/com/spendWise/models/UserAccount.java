@@ -7,6 +7,14 @@ import com.spendWise.util.*;
 
 public abstract class UserAccount {
 
+    public abstract String getUsername();
+    public abstract String getDisplayName();
+    public abstract String getPassword();
+    abstract boolean saveToDatabase() throws SQLException, IOException;
+    abstract boolean updateDatabase() throws SQLException, IOException;
+    abstract void updateUserAccount(String displayName, String password);
+    abstract boolean deleteUserAccount() throws SQLException, IOException;
+
     public static boolean doUsersExist() throws SQLException, IOException {
         
         try {
@@ -28,6 +36,9 @@ public abstract class UserAccount {
         try {
             UserAccountModel user = UserAccountModel.newUserAccount(username, displayName, password);
             user.saveToDatabase();
+
+            Account.updateCurrentUser(user);
+
             return true;
         } catch (SQLException e){
             for (Throwable t : e) {
@@ -42,11 +53,18 @@ public abstract class UserAccount {
 
     public static void logout() {
         UserAccountModel.logout();
+
+        Account.resetCurrentUser();
     }
 
     public static UserAccount login(String username, String password) throws IOException, IllegalStateException, SQLException {
         try {
-            return UserAccountModel.getUserAccount(username, password);
+            UserAccount account = UserAccountModel.getUserAccount(username, password);
+
+            Account.updateCurrentUser(account);
+
+            return account;
+
         } catch (SQLException e){
             for (Throwable t : e) {
                 if (t instanceof SQLNonTransientConnectionException) {
@@ -62,16 +80,47 @@ public abstract class UserAccount {
         try {
             DatabaseConnection.getConnection();
             String query = "SELECT * FROM Users WHERE username = ?";
-            ResultSet rs = DatabaseConnection.getPreparedStatement(query, username).executeQuery();
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, username);
+            ResultSet rs = ps.executeQuery();
             if (!rs.next()){
+                rs.close();
+                ps.close();
                 return false;
             }
+            rs.close();
+            ps.close();
             return true;
 
         } catch (IOException e){
             throw new IOException("Cannot access critical files.");
-        } finally {
-            DatabaseConnection.getStatement().close();
         }
     }
+
+    public static UserAccount getCurrentUser() {
+        return UserAccountModel.getInstance();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj instanceof UserAccount) {
+            UserAccount account = (UserAccount) obj;
+            return account.getUsername().equals(this.getUsername());
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getUsername().hashCode();
+    }
+
 }

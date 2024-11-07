@@ -1,6 +1,7 @@
 package com.spendWise.models;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.spendWise.util.DatabaseConnection;
@@ -43,18 +44,21 @@ public class UserAccountModel extends UserAccount {
         try {
             DatabaseConnection.getConnection();
             String query = "SELECT * FROM Users WHERE username = ? AND password = ?";
-            var rs = DatabaseConnection.getPreparedStatement(query, username, password).executeQuery();
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, username, password);
+            var rs = ps.executeQuery();
             if (rs.next()) {
                 instance = new UserAccountModel(rs.getString("username"), rs.getString("displayname"),
                         rs.getString("password"));
+                rs.close();
+                ps.close();
                 return instance;
             }
+            rs.close();
+            ps.close();
             return null;
 
         } catch (IOException e) {
             throw new IOException("Cannot access critical files.");
-        } finally {
-            DatabaseConnection.getStatement().close();
         }
     }
 
@@ -70,17 +74,21 @@ public class UserAccountModel extends UserAccount {
         return displayName;
     }
 
+    public static synchronized UserAccountModel getInstance() {
+        return instance;
+    }
+
     synchronized boolean saveToDatabase() throws SQLException, IOException {
         try {
             DatabaseConnection.getConnection();
             String query = "INSERT INTO Users (username, displayName, password) VALUES (?, ?, ?)";
-            DatabaseConnection.getPreparedStatement(query, username, displayName, password).executeUpdate();
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, username, displayName, password);
+            ps.executeUpdate();
+            ps.close();
             return true;
 
         } catch (IOException e) {
             throw new IOException("Cannot access critical files.");
-        } finally {
-            DatabaseConnection.getStatement().close();
         }
     }
 
@@ -88,13 +96,13 @@ public class UserAccountModel extends UserAccount {
         try {
             DatabaseConnection.getConnection();
             String query = "UPDATE Users SET displayName = ?, password = ? WHERE username = ?";
-            DatabaseConnection.getPreparedStatement(query, username, displayName, password).executeUpdate();
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, displayName, password, username);
+            ps.executeUpdate();
+            ps.close();
             return true;
 
         } catch (IOException e) {
             throw new IOException("Cannot access critical files.");
-        } finally {
-            DatabaseConnection.getStatement().close();
         }
     }
 
@@ -103,11 +111,13 @@ public class UserAccountModel extends UserAccount {
         password = newPassword;
     }
 
-    synchronized boolean deleteUserAccount(String username) throws SQLException, IOException {
+    synchronized boolean deleteUserAccount() throws SQLException, IOException {
         try {
             DatabaseConnection.getConnection();
             String query = "DELETE FROM Users WHERE username = ?";
-            DatabaseConnection.getPreparedStatement(query, username).executeUpdate();
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, username);
+            ps.executeUpdate();
+            ps.close();
 
             this.username = null;
             this.displayName = null;
@@ -117,8 +127,6 @@ public class UserAccountModel extends UserAccount {
 
         } catch (IOException e) {
             throw new IOException("Need permission to access file system.");
-        } finally {
-            DatabaseConnection.getStatement().close();
         }
     }
 

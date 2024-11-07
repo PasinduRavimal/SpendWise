@@ -5,8 +5,10 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
+import com.spendWise.models.Account;
 import com.spendWise.models.UserAccount;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,14 +17,20 @@ import javafx.scene.layout.*;
 
 public class HomeController implements Initializable {
 
+    private static TitledPane accountsStaticPane;
+
     @FXML
     private TitledPane dashboardPane;
     @FXML
     private TitledPane accountsPane;
-    @FXML private TitledPane settingsPane;
-    @FXML private TitledPane helpPane;
-    @FXML private Pane contentPane;
-    @FXML private TitledPane logoutPane;
+    @FXML
+    private TitledPane settingsPane;
+    @FXML
+    private TitledPane helpPane;
+    @FXML
+    private Pane contentPane;
+    @FXML
+    private TitledPane logoutPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -45,18 +53,36 @@ public class HomeController implements Initializable {
             ScreenController.centerStage();
         });
 
+        accountsStaticPane = accountsPane;
+
+    }
+
+    public static synchronized void addAccounts(){
+        Platform.runLater(() -> {
+            try {
+                AnchorPane anchorPane = (AnchorPane) accountsStaticPane.getContent();
+                for (Account account : Account.getAccountsList()){
+                    System.out.println(account.getAccountName());
+                    anchorPane.getChildren().add(new Button(account.getAccountName()));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+                alert.showAndWait();
+            }
+        });
     }
 
     class ContentController {
         private HashMap<String, Pane> contentMap = new HashMap<>();
-        
+
         public ContentController() {
-            try{
-            contentMap.put("dashboard", FXMLLoader.load(getClass().getResource("../views/DashboardContent.fxml")));
-            contentMap.put("accounts", new Pane());
-            contentMap.put("settings", FXMLLoader.load(getClass().getResource("../views/SettingsContent.fxml")));
-            contentMap.put("help", FXMLLoader.load(getClass().getResource("../views/HelpContent.fxml")));
-            } catch (IOException e){
+            try {
+                contentMap.put("dashboard", FXMLLoader.load(getClass().getResource("../views/DashboardContent.fxml")));
+                contentMap.put("accounts", new Pane());
+                contentMap.put("settings", FXMLLoader.load(getClass().getResource("../views/SettingsContent.fxml")));
+                contentMap.put("help", FXMLLoader.load(getClass().getResource("../views/HelpContent.fxml")));
+            } catch (IOException e) {
                 e.printStackTrace();
                 Alert alert = new Alert(Alert.AlertType.ERROR, "An error occurred while loading the content");
                 alert.showAndWait();
@@ -68,5 +94,5 @@ public class HomeController implements Initializable {
             contentPane.getChildren().add(contentMap.get(key));
         }
     }
-    
+
 }

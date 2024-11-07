@@ -222,7 +222,7 @@ public class DatabaseConnection {
                     "  PRIMARY KEY (`username`));");
 
             statement.addBatch(
-                    "CREATE TABLE `spendwise`.`accounttypes` (`accountID` INT NOT NULL AUTO_INCREMENT , `accountName` VARCHAR(50) NOT NULL , PRIMARY KEY (`accountID`), UNIQUE `accountName_UNIQUE` (`accountName`)) ENGINE = InnoDB;");
+                    "CREATE TABLE `spendwise`.`accounttypes` (`accountID` INT NOT NULL AUTO_INCREMENT , `accountName` VARCHAR(50) NOT NULL , `accountOwner` VARCHAR(50) NOT NULL , PRIMARY KEY (`accountID`), UNIQUE `accountName_UNIQUE` (`accountName`)) ENGINE = InnoDB;");
 
             statement.addBatch(
                     "CREATE TABLE `spendwise`.`transactions` (`transactionID` INT NOT NULL AUTO_INCREMENT , `username` VARCHAR(50) NOT NULL , `debitAccountID` INT NOT NULL , `creditAccountID` INT NOT NULL , `transactionTime` DATETIME NOT NULL , `amount` DOUBLE NOT NULL , `description` VARCHAR(255) , PRIMARY KEY (`transactionID`)) ENGINE = InnoDB; ");
@@ -238,9 +238,11 @@ public class DatabaseConnection {
             statement.addBatch(
                     "ALTER TABLE `transactions` ADD CONSTRAINT `FK_debitAccountID_account` FOREIGN KEY (`debitAccountID`) REFERENCES `accounttypes`(`accountID`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
 
+            statement.addBatch(
+                    "ALTER TABLE `accounttypes` ADD CONSTRAINT `FK_username_user` FOREIGN KEY (`accountOwner`) REFERENCES `users`(`username`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
+
             statement.executeBatch();
 
-            statement.close();
         } catch (SQLException e) {
             for (Throwable t : e) {
                 if (t instanceof SQLNonTransientConnectionException) {
@@ -248,6 +250,9 @@ public class DatabaseConnection {
                 }
             }
             throw e;
+        } finally {
+            statement.clearBatch();
+            statement.close();
         }
     }
 
