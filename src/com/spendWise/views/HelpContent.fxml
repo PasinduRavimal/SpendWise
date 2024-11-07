@@ -21,9 +21,9 @@
          <children>
             <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab text="About SpendWise">
+                <Tab text="About SpendWise" style="-fx-background-color: #55DA68;">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #eeccff;">
                            <children>
                               <VBox prefHeight="170.0" prefWidth="600.0">
                                  <children>
@@ -62,9 +62,9 @@
                 </Tab>
               </tabs>
             </TabPane>
-            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" style="-fx-background-color: white;">
               <tabs>
-                <Tab text="Help Center">
+                <Tab text="Help Center" style="-fx-background-color: #55DA68;">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <opaqueInsets>
