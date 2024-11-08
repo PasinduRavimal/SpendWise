@@ -62,6 +62,9 @@ public class DatabaseConnection {
             for (Throwable t : e) {
                 if (t instanceof SQLNonTransientConnectionException) {
                     throw new SQLException("Cannot connect to the database");
+                } else if (e.getErrorCode() == 1045) {
+                    throw new SQLException(
+                            "Please provide the correct database credentials in the databaseInfo.properties file.");
                 }
             }
             throw e;
@@ -215,17 +218,17 @@ public class DatabaseConnection {
 
             statement.addBatch("DROP TABLE IF EXISTS `transaction`, `user`, `accounttypes`;");
 
-            statement.addBatch("CREATE TABLE `spendwise`.`users` (" +
+            statement.addBatch("CREATE TABLE `users` (" +
                     "  `username` VARCHAR(30) NOT NULL," +
                     "  `displayname` VARCHAR(50) NOT NULL," +
                     "  `password` VARCHAR(30) NOT NULL," +
                     "  PRIMARY KEY (`username`));");
 
             statement.addBatch(
-                    "CREATE TABLE `spendwise`.`accounttypes` (`accountID` INT NOT NULL AUTO_INCREMENT , `accountName` VARCHAR(50) NOT NULL , `accountOwner` VARCHAR(50) NOT NULL , PRIMARY KEY (`accountID`), UNIQUE `accountName_UNIQUE` (`accountName`)) ENGINE = InnoDB;");
+                    "CREATE TABLE `accounttypes` (`accountID` INT NOT NULL AUTO_INCREMENT , `accountName` VARCHAR(50) NOT NULL , `accountOwner` VARCHAR(50) NOT NULL , PRIMARY KEY (`accountID`)) ENGINE = InnoDB;");
 
             statement.addBatch(
-                    "CREATE TABLE `spendwise`.`transactions` (`transactionID` INT NOT NULL AUTO_INCREMENT , `username` VARCHAR(50) NOT NULL , `debitAccountID` INT NOT NULL , `creditAccountID` INT NOT NULL , `transactionTime` DATETIME NOT NULL , `amount` DOUBLE NOT NULL , `description` VARCHAR(255) , PRIMARY KEY (`transactionID`)) ENGINE = InnoDB; ");
+                    "CREATE TABLE `transactions` (`transactionID` INT NOT NULL AUTO_INCREMENT , `username` VARCHAR(50) NOT NULL , `debitAccountID` INT NOT NULL , `creditAccountID` INT NOT NULL , `transactionTime` DATETIME NOT NULL , `amount` DOUBLE NOT NULL , `description` VARCHAR(255) , PRIMARY KEY (`transactionID`)) ENGINE = InnoDB; ");
 
             statement.addBatch("ALTER TABLE `transactions` ADD INDEX(`debitAccountID`, `creditAccountID`);");
 
@@ -240,6 +243,9 @@ public class DatabaseConnection {
 
             statement.addBatch(
                     "ALTER TABLE `accounttypes` ADD CONSTRAINT `FK_username_user` FOREIGN KEY (`accountOwner`) REFERENCES `users`(`username`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
+
+            statement.addBatch(
+                    "ALTER TABLE spendwise.accounttypes ADD CONSTRAINT accounttypes_unique UNIQUE KEY (accountName,accountOwner);");
 
             statement.executeBatch();
 

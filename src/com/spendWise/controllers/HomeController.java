@@ -82,7 +82,7 @@ public class HomeController implements Initializable {
                     titledPane.setOnMouseClicked(event -> {
                         FXMLLoader loader = new FXMLLoader(HomeController.class.getResource("../views/AccountContent.fxml"));
                         AccountController controller = new AccountController();
-                        controller.setAccountTitle(account.getAccountName());
+                        controller.setAccount(account);
                         loader.setController(controller);
                         try{
                             Pane root = loader.load();

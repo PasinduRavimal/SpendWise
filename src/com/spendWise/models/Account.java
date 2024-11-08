@@ -40,7 +40,7 @@ public abstract class Account {
         } catch (SQLException e) {
             // TODO: Remove following code
             DatabaseConnection.getStatement().executeUpdate("ALTER TABLE accounttypes ADD COLUMN accountOwner VARCHAR(50) NOT NULL");
-
+            
             for (Throwable t : e) {
                 if (t instanceof SQLNonTransientConnectionException) {
                     throw new SQLException("Database connection error.");

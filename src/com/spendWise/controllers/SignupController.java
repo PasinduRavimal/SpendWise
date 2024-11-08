@@ -7,6 +7,7 @@ import java.util.*;
 
 import com.spendWise.models.UserAccount;
 
+import javafx.application.Platform;
 import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
@@ -70,18 +71,22 @@ public class SignupController implements Initializable {
                     e.printStackTrace();
                     Alert alert = new Alert(AlertType.ERROR, e.getMessage());
                     alert.showAndWait();
+                    Platform.exit();
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                     Alert alert = new Alert(AlertType.ERROR, e.getMessage());
                     alert.showAndWait();
+                    Platform.exit();
                 } catch (IOException e) {
                     e.printStackTrace();
                     Alert alert = new Alert(AlertType.ERROR, e.getMessage());
                     alert.showAndWait();
+                    Platform.exit();
                 } catch (SQLException e) {
                     e.printStackTrace();
                     Alert alert = new Alert(AlertType.ERROR, e.getMessage());
                     alert.showAndWait();
+                    Platform.exit();
                 } finally {
                     usernameField.clear();
                     passwordField.clear();
