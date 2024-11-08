@@ -59,7 +59,7 @@ public abstract class Account {
     public static synchronized void updateCurrentUser(UserAccount user) throws SQLException {
         currentUser = user;
         getAccountsList();
-        HomeController.addAccounts();
+        HomeController.getInstance().addAccounts();
     }
 
     @Override

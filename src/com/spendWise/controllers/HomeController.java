@@ -19,6 +19,7 @@ import javafx.scene.layout.*;
 public class HomeController implements Initializable {
 
     private static TitledPane accountsStaticPane;
+    private static HomeController instance;
 
     @FXML
     private TitledPane dashboardPane;
@@ -33,9 +34,11 @@ public class HomeController implements Initializable {
     @FXML
     private TitledPane logoutPane;
 
+    private ContentController contentController;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ContentController contentController = new ContentController();
+        contentController = new ContentController();
         contentController.setContent("dashboard");
 
         dashboardPane.setOnMouseClicked(event -> {
@@ -55,10 +58,15 @@ public class HomeController implements Initializable {
         });
 
         accountsStaticPane = accountsPane;
+        instance = this;
 
     }
 
-    public static synchronized void addAccounts(){
+    public static HomeController getInstance(){
+        return instance;
+    }
+
+    public synchronized void addAccounts(){
         Platform.runLater(() -> {
             try {
                 AnchorPane anchorPane = (AnchorPane) accountsStaticPane.getContent();
@@ -66,11 +74,26 @@ public class HomeController implements Initializable {
                 vbox.setPrefHeight(180);
                 vbox.setPrefWidth(200);
                 for (Account account : Account.getAccountsList()){
-                    System.out.println(account.getAccountName());
                     TitledPane titledPane = new TitledPane(account.getAccountName(), null);
                     titledPane.setCollapsible(false);
                     titledPane.setExpanded(false);
                     titledPane.setMaxWidth(190);
+
+                    titledPane.setOnMouseClicked(event -> {
+                        FXMLLoader loader = new FXMLLoader(HomeController.class.getResource("../views/AccountContent.fxml"));
+                        AccountController controller = new AccountController();
+                        controller.setAccountTitle(account.getAccountName());
+                        loader.setController(controller);
+                        try{
+                            Pane root = loader.load();
+                            contentController.setContentByFXML(root);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load account content");
+                            alert.showAndWait();
+                        }
+                    });
+
                     vbox.getChildren().add(titledPane);
                 }
                 ScrollPane scrollPane = new ScrollPane(vbox);
@@ -103,6 +126,11 @@ public class HomeController implements Initializable {
         public void setContent(String key) {
             contentPane.getChildren().clear();
             contentPane.getChildren().add(contentMap.get(key));
+        }
+
+        public void setContentByFXML(Pane root){
+            contentPane.getChildren().clear();
+            contentPane.getChildren().add(root);
         }
     }
 

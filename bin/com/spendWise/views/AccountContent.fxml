@@ -8,24 +8,24 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AccountPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AccountPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label id="LabelElectricityAccountTitle" alignment="CENTER" layoutX="54.0" layoutY="14.0" text="Electricity Expenses Account for the Month of September of 2024">
+      <Label fx:id="AccountTitleLabel" alignment="CENTER" layoutX="54.0" layoutY="14.0" text="Electricity Expenses Account for the Month of September of 2024">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <Label id="LabelMakeExpenses" layoutX="24.0" layoutY="300.0" text="Expenses To Make :">
+      <Label fx:id="MakeExpensesLabel" layoutX="24.0" layoutY="300.0" text="Expenses To Make :">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label id="LabelAlreadyMadeExpenses" layoutX="24.0" layoutY="328.0" text="Expenses Already Made :">
+      <Label fx:id="AlreadyMadeExpensesLabel" layoutX="24.0" layoutY="328.0" text="Expenses Already Made :">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label id="LabelTotalExpenses" layoutX="24.0" layoutY="357.0" text="Total Expenses :">
+      <Label fx:id="TotalExpensesLabel" layoutX="24.0" layoutY="357.0" text="Total Expenses :">
          <font>
             <Font size="14.0" />
          </font>
