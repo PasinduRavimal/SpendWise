@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="ManageAccountPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: linear-gradient(to bottom, #dfefff, #b3d9ff); -fx-padding: 20;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Label id="LabelAccountName" layoutX="50.0" layoutY="100.0" style="-fx-text-fill: #2a5d84;" text="Account Name :">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Label>
+        <TextField id="TextFieldAccountName" fx:id="accountNameField" layoutX="192.0" layoutY="96.0" prefHeight="42.0" prefWidth="250.0" style="-fx-background-color: #ffffff; -fx-border-color: #80bfff; -fx-border-radius: 10; -fx-background-radius: 10;" />
+
+        <Button id="ButtonCreateAccount" fx:id="createAccountButton" layoutX="156.0" layoutY="229.0" prefHeight="42.0" prefWidth="130.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-border-radius: 20; -fx-background-radius: 20;" text="Create Account">
+         <font>
+            <Font size="14.0" />
+         </font>
+        </Button>
+        <Button id="ButtonRenameAccount" fx:id="renameAccountButton" layoutX="300.0" layoutY="227.0" prefHeight="42.0" prefWidth="130.0" style="-fx-background-color: #FFC107; -fx-text-fill: white; -fx-border-radius: 20; -fx-background-radius: 20;" text="Rename Account">
+         <font>
+            <Font size="14.0" />
+         </font>
+        </Button>
+        <Button id="ButtonDeleteAccount" fx:id="deleteAccountButton" layoutX="445.0" layoutY="226.0" prefHeight="42.0" prefWidth="130.0" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-border-radius: 20; -fx-background-radius: 20;" text="Delete Account">
+         <font>
+            <Font size="14.0" />
+         </font>
+        </Button>
+    </children>
+</AnchorPane>
