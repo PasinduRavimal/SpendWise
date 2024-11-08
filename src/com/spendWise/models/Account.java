@@ -62,6 +62,26 @@ public abstract class Account {
         HomeController.getInstance().addAccounts();
     }
 
+    public static Account createAccount(String accountName) throws SQLException {
+        if (!doesAccountExist(accountName)){
+            return new AccountModel(accountName);
+        } else {
+            throw new IllegalArgumentException("Account already exists.");
+        }
+
+    }
+
+    public static boolean doesAccountExist(String accountName) throws SQLException {
+        getAccountsList();
+        for (Account account : accounts) {
+            if (account.getAccountName().equals(accountName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {

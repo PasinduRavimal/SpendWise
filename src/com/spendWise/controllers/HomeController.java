@@ -50,6 +50,9 @@ public class HomeController implements Initializable {
         helpPane.setOnMouseClicked(event -> {
             contentController.setContent("help");
         });
+        accountsPane.setOnMouseClicked(event -> {
+            contentController.setContent("accounts");
+        });
         logoutPane.setOnMouseClicked(event -> {
             UserAccount.logout();
             ScreenController.activate("Signin");
@@ -73,7 +76,14 @@ public class HomeController implements Initializable {
                 VBox vbox = new VBox();
                 vbox.setPrefHeight(180);
                 vbox.setPrefWidth(200);
-                for (Account account : Account.getAccountsList()){
+                List<Account> accounts = Account.getAccountsList();
+                if (accounts.isEmpty()) {
+                    accountsPane.setCollapsible(false);
+                    return;
+                }
+                accountsPane.setCollapsible(true);
+                anchorPane.getChildren().clear();
+                for (Account account : accounts) {
                     TitledPane titledPane = new TitledPane(account.getAccountName(), null);
                     titledPane.setCollapsible(false);
                     titledPane.setExpanded(false);
@@ -113,7 +123,7 @@ public class HomeController implements Initializable {
         public ContentController() {
             try {
                 contentMap.put("dashboard", FXMLLoader.load(getClass().getResource("../views/DashboardContent.fxml")));
-                contentMap.put("accounts", new Pane());
+                contentMap.put("accounts", FXMLLoader.load(getClass().getResource("../views/AccountSettingsContent.fxml")));
                 contentMap.put("settings", FXMLLoader.load(getClass().getResource("../views/SettingsContent.fxml")));
                 contentMap.put("help", FXMLLoader.load(getClass().getResource("../views/HelpContent.fxml")));
             } catch (IOException e) {
