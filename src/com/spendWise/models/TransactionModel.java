@@ -4,7 +4,7 @@ import java.sql.*;
 
 import com.spendWise.util.DatabaseConnection;
 
-public class TransactionModel {
+public class TransactionModel extends Transaction {
     private int transactionID;
     private String username;
     private int debitingAccountID;

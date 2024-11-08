@@ -38,18 +38,18 @@
          <center>
             <HBox prefHeight="250.0" prefWidth="500.0" BorderPane.alignment="CENTER">
                <children>
-                  <TableView prefHeight="238.0" prefWidth="250.0" style="-fx-background-color: #e6b3ff;">
+                  <TableView fx:id="debitColumn" prefHeight="238.0" prefWidth="250.0" style="-fx-background-color: #e6b3ff;">
                      <columns>
-                        <TableColumn editable="false" prefWidth="55.0" sortable="false" text="Date" />
-                        <TableColumn editable="false" prefWidth="130.0" sortable="false" text="Description" />
-                        <TableColumn editable="false" minWidth="8.79998779296875" prefWidth="65.0" sortable="false" text="Amount" />
+                        <TableColumn fx:id="debitColumnDate" editable="false" prefWidth="55.0" sortable="false" text="Date" />
+                        <TableColumn fx:id="debitColumnDescription" editable="false" prefWidth="130.0" sortable="false" text="Description" />
+                        <TableColumn fx:id="debitColumnAmount" editable="false" minWidth="8.79998779296875" prefWidth="65.0" sortable="false" text="Amount" />
                      </columns>
                   </TableView>
-                  <TableView prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: #e6b3ff;">
+                  <TableView fx:id="creditColumn" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: #e6b3ff;">
                     <columns>
-                      <TableColumn editable="false" prefWidth="55.0" sortable="false" text="Date" />
-                      <TableColumn editable="false" prefWidth="130.0" sortable="false" text="Description" />
-                        <TableColumn editable="false" prefWidth="65.0" sortable="false" text="Amount" />
+                      <TableColumn fx:id="creditColumnDate" editable="false" prefWidth="55.0" sortable="false" text="Date" />
+                      <TableColumn fx:id="creditColumnDescription" editable="false" prefWidth="130.0" sortable="false" text="Description" />
+                        <TableColumn fx:id="creditColumntAmount" editable="false" prefWidth="65.0" sortable="false" text="Amount" />
                     </columns>
                   </TableView>
                </children>

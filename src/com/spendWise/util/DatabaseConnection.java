@@ -242,7 +242,7 @@ public class DatabaseConnection {
                     "ALTER TABLE `transactions` ADD CONSTRAINT `FK_debitAccountID_account` FOREIGN KEY (`debitAccountID`) REFERENCES `accounttypes`(`accountID`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
 
             statement.addBatch(
-                    "ALTER TABLE `accounttypes` ADD CONSTRAINT `FK_username_user` FOREIGN KEY (`accountOwner`) REFERENCES `users`(`username`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
+                    "ALTER TABLE `accounttypes` ADD CONSTRAINT `FK_usernameaccounttype_user` FOREIGN KEY (`accountOwner`) REFERENCES `users`(`username`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
 
             statement.addBatch(
                     "ALTER TABLE spendwise.accounttypes ADD CONSTRAINT accounttypes_unique UNIQUE KEY (accountName,accountOwner);");
