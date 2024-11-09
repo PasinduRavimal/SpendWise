@@ -30,7 +30,6 @@
          </font>
       </Label>
       <DatePicker fx:id="DatePickerSelectTransactionDate" layoutX="66.0" layoutY="233.0" prefHeight="35.0" prefWidth="446.0" />
-      <Text fx:id="TextTransactionDate" layoutX="79.0" layoutY="255.0" strokeType="OUTSIDE" strokeWidth="0.0" text="08/17/2023" wrappingWidth="106.61090087890625" />
       <Text fx:id="TextDateType" fill="#636161" layoutX="78.0" layoutY="287.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MM/DD/YYYY" wrappingWidth="106.61090087890625">
          <font>
             <Font size="10.0" />
