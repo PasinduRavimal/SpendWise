@@ -216,7 +216,7 @@ public class DatabaseConnection {
         try {
             getStatement();
 
-            statement.addBatch("DROP TABLE IF EXISTS `transaction`, `user`, `accounttypes`;");
+            statement.addBatch("DROP TABLE IF EXISTS `transactions`, `users`, `accounttypes`;");
 
             statement.addBatch("CREATE TABLE `users` (" +
                     "  `username` VARCHAR(30) NOT NULL," +
@@ -247,6 +247,49 @@ public class DatabaseConnection {
             statement.addBatch(
                     "ALTER TABLE spendwise.accounttypes ADD CONSTRAINT accounttypes_unique UNIQUE KEY (accountName,accountOwner);");
 
+            statement.addBatch("create view transactionssummary as" +
+                    "SELECT " +
+                    "    COALESCE(debit.accountID, credit.accountID) AS accountID," +
+                    "    COALESCE(debit.debitSum, 0) AS debitSum," +
+                    "    COALESCE(credit.creditSum, 0) AS creditSum," +
+                    "    COALESCE(debit.transactionMonth, credit.transactionMonth) AS transactionMonth" +
+                    "FROM " +
+                    "    (SELECT " +
+                    "        SUM(amount) AS debitSum, " +
+                    "        debitAccountID AS accountID, " +
+                    "        DATE_FORMAT(transactiontime, '%Y-%m') AS transactionMonth" +
+                    "     FROM transactions" +
+                    "     GROUP BY debitAccountID, transactionMonth) AS debit" +
+                    "LEFT JOIN " +
+                    "    (SELECT " +
+                    "        SUM(amount) AS creditSum, " +
+                    "        creditAccountID AS accountID, " +
+                    "        DATE_FORMAT(transactiontime, '%Y-%m') AS transactionMonth" +
+                    "     FROM transactions" +
+                    "     GROUP BY creditAccountID, transactionMonth) AS credit" +
+                    "ON debit.accountID = credit.accountID AND debit.transactionMonth = credit.transactionMonth" +
+                    "UNION" +
+                    "SELECT " +
+                    "    COALESCE(debit.accountID, credit.accountID) AS accountID," +
+                    "    COALESCE(debit.debitSum, 0) AS debitSum," +
+                    "    COALESCE(credit.creditSum, 0) AS creditSum," +
+                    "    COALESCE(debit.transactionMonth, credit.transactionMonth) AS transactionMonth" +
+                    "FROM " +
+                    "    (SELECT " +
+                    "        SUM(amount) AS debitSum, " +
+                    "        debitAccountID AS accountID, " +
+                    "        DATE_FORMAT(transactiontime, '%Y-%m') AS transactionMonth" +
+                    "     FROM transactions" +
+                    "     GROUP BY debitAccountID, transactionMonth) AS debit" +
+                    "RIGHT JOIN " +
+                    "    (SELECT " +
+                    "        SUM(amount) AS creditSum, " +
+                    "        creditAccountID AS accountID, " +
+                    "        DATE_FORMAT(transactiontime, '%Y-%m') AS transactionMonth" +
+                    "     FROM transactions" +
+                    "     GROUP BY creditAccountID, transactionMonth) AS credit" +
+                    "ON debit.accountID = credit.accountID AND debit.transactionMonth = credit.transactionMonth;" +
+                    "");
             statement.executeBatch();
 
         } catch (SQLException e) {

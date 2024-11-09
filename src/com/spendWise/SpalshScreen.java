@@ -109,7 +109,6 @@ public class SpalshScreen extends Application {
                             return true;
                         } else {
                             updateMessage("Loading GUI...");
-
                             loadSignup();
 
                             return true;
