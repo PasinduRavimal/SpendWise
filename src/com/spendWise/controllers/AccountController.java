@@ -100,6 +100,8 @@ public class AccountController implements Initializable {
 
         this.account = account;
 
+        loadTransactions();
+
     }
 
     public void loadTransactions() {
@@ -109,8 +111,11 @@ public class AccountController implements Initializable {
         Task<ObservableList<Transaction>> debitTask = new Task<ObservableList<Transaction>>() {
             @Override
             protected ObservableList<Transaction> call() throws SQLException {
-                return FXCollections.observableArrayList(
-                        Transaction.getDebitTransactions(account, today.getMonthValue(), today.getYear()));
+                List<Transaction> list = Transaction.getDebitTransactions(account, today.getMonthValue(), today.getYear());
+                for (Transaction transaction : list) {
+                    System.out.println(transaction.getDescription());
+                }
+                return FXCollections.observableArrayList(list);
             }
         };
 
@@ -131,8 +136,11 @@ public class AccountController implements Initializable {
         Task<ObservableList<Transaction>> creditTask = new Task<ObservableList<Transaction>>() {
             @Override
             protected ObservableList<Transaction> call() throws SQLException {
-                return FXCollections.observableArrayList(
-                        Transaction.getDebitTransactions(account, today.getMonthValue(), today.getYear()));
+                List<Transaction> list = Transaction.getCreditTransactions(account, today.getMonthValue(), today.getYear());
+                for (Transaction transaction : list) {
+                    System.out.println(transaction.getDescription());
+                }
+                return FXCollections.observableArrayList(list);
             }
         };
 

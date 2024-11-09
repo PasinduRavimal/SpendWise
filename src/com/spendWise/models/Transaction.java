@@ -1,20 +1,11 @@
 package com.spendWise.models;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.sql.*;
 
 import com.spendWise.util.DatabaseConnection;
 
-import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-
 public abstract class Transaction {
-
-    private Task<ObservableList<Transaction>> debitTask;
-    private Task<ObservableList<Transaction>> creditTask;
-    private ExecutorService executor = Executors.newCachedThreadPool();
 
     public abstract int getTransactionID();
     public abstract String getUsername();
@@ -37,15 +28,15 @@ public abstract class Transaction {
             throws SQLException {
         try {
             String username = UserAccount.getCurrentUser().getUsername();
-            String query = "SELECT * FROM transactions WHERE username = ? AND creditingAccountID = ? AND MONTH(transactionTime) = ? AND YEAR(transactionTime) = ?";
-            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, username, account.getAccountID(),
+            String query = "SELECT * FROM transactions WHERE username = ? AND creditAccountID = ? AND MONTH(transactionTime) = ? AND YEAR(transactionTime) = ?";
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, username,
                     account.getAccountID(), month, Year);
             ResultSet rs = ps.executeQuery();
 
             List<Transaction> transactions = new ArrayList<>();
             while (rs.next()) {
-                transactions.add(new TransactionModel(username, rs.getInt("debitingAccountID"),
-                        rs.getInt("creditingAccountID"), rs.getTimestamp("transactionTime"), rs.getDouble("amount"),
+                transactions.add(new TransactionModel(username, rs.getInt("debitAccountID"),
+                        rs.getInt("creditAccountID"), rs.getTimestamp("transactionTime"), rs.getDouble("amount"),
                         rs.getString("description")));
             }
             rs.close();
@@ -58,7 +49,7 @@ public abstract class Transaction {
                     throw new SQLException("Database connection error.");
                 }
             }
-            return null;
+            throw e;
         }
     }
 
@@ -66,15 +57,15 @@ public abstract class Transaction {
             throws SQLException {
         try {
             String username = UserAccount.getCurrentUser().getUsername();
-            String query = "SELECT * FROM transactions WHERE username = ? AND debitingAccountID = ? AND MONTH(transactionTime) = ? AND YEAR(transactionTime) = ?";
-            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, username, account.getAccountID(),
+            String query = "SELECT * FROM transactions WHERE username = ? AND debitAccountID = ? AND MONTH(transactionTime) = ? AND YEAR(transactionTime) = ?";
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, username,
                     account.getAccountID(), month, Year);
             ResultSet rs = ps.executeQuery();
 
             List<Transaction> transactions = new ArrayList<>();
             while (rs.next()) {
-                transactions.add(new TransactionModel(username, rs.getInt("debitingAccountID"),
-                        rs.getInt("creditingAccountID"), rs.getTimestamp("transactionTime"), rs.getDouble("amount"),
+                transactions.add(new TransactionModel(username, rs.getInt("debitAccountID"),
+                        rs.getInt("creditAccountID"), rs.getTimestamp("transactionTime"), rs.getDouble("amount"),
                         rs.getString("description")));
             }
             rs.close();
@@ -87,7 +78,7 @@ public abstract class Transaction {
                     throw new SQLException("Database connection error.");
                 }
             }
-            return null;
+            throw e;
         }
     }
 
