@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 public class DashboardContentController  implements Initializable {
 
     @FXML
-    private Button ButtonAddTransaction, ButtonCorrectError;
+    private Button ButtonAddTransaction, ButtonCorrectError, ButtonEditTransaction;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -28,7 +28,6 @@ public class DashboardContentController  implements Initializable {
                 Stage currentStage = (Stage) ButtonAddTransaction.getScene().getWindow();
                 currentStage.setScene(addTransactionScene);
                 currentStage.setTitle("Add Transaction");
-                currentStage.centerOnScreen(); 
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -42,7 +41,19 @@ public class DashboardContentController  implements Initializable {
                 Stage currentStage = (Stage) ButtonCorrectError.getScene().getWindow();
                 currentStage.setScene(correctErrorScene);
                 currentStage.setTitle("Correct Transaction Error");
-                currentStage.centerOnScreen(); 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        ButtonEditTransaction.setOnAction(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/EditTransaction.fxml"));
+                Parent editTransactionRoot = loader.load();
+                Scene editTransactionScene = new Scene(editTransactionRoot);
+                Stage currentStage = (Stage) ButtonEditTransaction.getScene().getWindow();
+                currentStage.setScene(editTransactionScene);
+                currentStage.setTitle("Edit Transaction");
             } catch (IOException e) {
                 e.printStackTrace();
             }

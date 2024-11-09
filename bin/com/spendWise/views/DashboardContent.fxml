@@ -9,12 +9,12 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="DashbordPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #eeccff;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="DashbordPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #eeccff;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.spendWise.controllers.DashboardContentController" >
    <children>
-      <Rectangle fx:id="RectangleDate" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="25.0" layoutX="239.0" layoutY="14.0" stroke="WHITE" strokeType="INSIDE" width="121.0" />
+      <Rectangle fx:id="RectangleDate" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="25.0" layoutX="240.0" layoutY="14.0" stroke="WHITE" strokeType="INSIDE" width="120.0" />
       <TabPane fx:id="TabPaneAccountDetails" layoutX="16.0" layoutY="48.0" prefHeight="151.0" prefWidth="567.0" style="-fx-background-color: white;" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab fx:id="TabAccountDetails" text="Account Details">
+          <Tab fx:id="TabAccountDetails" text="Account Details" style="-fx-background-color: #55DA68;">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="158.0" prefWidth="567.0">
                      <children>
@@ -24,8 +24,9 @@
                         <Rectangle fx:id="RectangleCashBalance" arcHeight="5.0" arcWidth="5.0" fill="#e2aef2" height="20.0" layoutX="104.0" layoutY="16.0" stroke="#e2aef2" strokeType="INSIDE" width="160.0" />
                         <Rectangle fx:id="RectangleBankBalance" arcHeight="5.0" arcWidth="5.0" fill="#e2aef2" height="20.0" layoutX="393.0" layoutY="16.0" stroke="#e2aef2" strokeType="INSIDE" width="160.0" />
                         <Rectangle fx:id="RectangleTotalBalance" arcHeight="5.0" arcWidth="5.0" fill="#e2aef2" height="20.0" layoutX="252.0" layoutY="45.0" stroke="#e2aef2" strokeType="INSIDE" width="160.0" />
-                        <Button fx:id="ButtonAddTransaction" layoutX="172.0" layoutY="82.0" mnemonicParsing="false" style="-fx-background-color: #ff9900;" text="Add a Transaction" />
-                        <Button fx:id="ButtonCorrectError" layoutX="305.0" layoutY="82.0" mnemonicParsing="false" style="-fx-background-color: #ff9900;" text="Correct an Error" />
+                        <Button fx:id="ButtonEditTransaction" layoutX="225.0" layoutY="82.0" mnemonicParsing="false" style="-fx-background-color: #ff9900;" text="Edit a Transaction" />
+                        <Button fx:id="ButtonCorrectError" layoutX="375.0" layoutY="82.0" mnemonicParsing="false" style="-fx-background-color: #ff9900;" text="Correct an Error" />
+                        <Button fx:id="ButtonAddTransaction" layoutX="75.0" layoutY="82.0" mnemonicParsing="false" style="-fx-background-color: #ff9900;" text="Add a Transaction" />
                      </children>
                   </AnchorPane>
             </content>
@@ -34,7 +35,7 @@
       </TabPane>
       <TabPane fx:id="TabPaneTransactionHistory" layoutX="16.0" layoutY="218.0" prefHeight="170.0" prefWidth="567.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab fx:id="TabTransactionHistory" text="Transaction History">
+          <Tab fx:id="TabTransactionHistory" text="Transaction History" style="-fx-background-color: #55DA68;">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #fff;">
                      <children>
