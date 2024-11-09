@@ -123,4 +123,17 @@ public abstract class UserAccount {
         return this.getUsername().hashCode();
     }
 
+    public static void changePassword(String password) {
+        UserAccountModel userAccountModel = UserAccountModel.getInstance();
+        userAccountModel.updateUserAccount(userAccountModel.getDisplayName(), password);
+    }
+    public static void changeDisplayName(String displayName) {
+        UserAccountModel userAccountModel = UserAccountModel.getInstance();
+        userAccountModel.updateUserAccount(displayName, userAccountModel.getPassword());
+    }
+    public static void deleteUser() throws SQLException, IOException {
+        UserAccountModel userAccountModel = UserAccountModel.getInstance();
+        userAccountModel.deleteUserAccount();
+    }
+
 }

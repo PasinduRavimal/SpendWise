@@ -16,7 +16,7 @@
   <items>
       <Pane prefHeight="400.0" prefWidth="800.0">
          <children>
-            <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="200.0">
+            <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="200.0" style="-fx-background-color:#A188C4">
                <children>
                   <TextField editable="false" focusTraversable="false" text="SpendWise">
                      <font>
