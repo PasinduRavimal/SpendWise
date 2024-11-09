@@ -12,6 +12,8 @@ public abstract class Account {
 
     public abstract int getAccountID();
     public abstract String getAccountName();
+    public abstract void setAccountName(String accountName) throws SQLException;
+    public abstract void deleteAccount() throws SQLException;
 
     public static synchronized List<Account> getAccountsList() throws SQLException {
         if (currentUser == null) {
@@ -29,7 +31,7 @@ public abstract class Account {
             PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, currentUser.getUsername());
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()){
+            while (rs.next()) {
                 accounts.add(new AccountModel(rs.getInt("accountID"), rs.getString("accountName")));
             }
 
@@ -39,8 +41,9 @@ public abstract class Account {
             return accounts;
         } catch (SQLException e) {
             // TODO: Remove following code
-            DatabaseConnection.getStatement().executeUpdate("ALTER TABLE accounttypes ADD COLUMN accountOwner VARCHAR(50) NOT NULL");
-            
+            DatabaseConnection.getStatement()
+                    .executeUpdate("ALTER TABLE accounttypes ADD COLUMN accountOwner VARCHAR(50) NOT NULL");
+
             for (Throwable t : e) {
                 if (t instanceof SQLNonTransientConnectionException) {
                     throw new SQLException("Database connection error.");
@@ -51,7 +54,7 @@ public abstract class Account {
         }
     }
 
-    public static synchronized void resetCurrentUser(){
+    public static synchronized void resetCurrentUser() {
         currentUser = null;
         accounts.clear();
     }
@@ -63,12 +66,57 @@ public abstract class Account {
     }
 
     public static Account createAccount(String accountName) throws SQLException {
-        if (!doesAccountExist(accountName)){
-            return new AccountModel(accountName);
+        if (!doesAccountExist(accountName)) {
+            Account newAccount = new AccountModel(accountName);
+            accounts.add(newAccount);
+            HomeController.getInstance().addAccounts();
+            return newAccount;
         } else {
-            throw new IllegalArgumentException("Account already exists.");
+            return null;
         }
 
+    }
+
+    public static Account getAccountByName(String accountName) throws SQLException {
+        getAccountsList();
+        for (Account account : accounts) {
+            if (account.getAccountName().equals(accountName)) {
+                return account;
+            }
+        }
+
+        return null;
+    }
+
+    public static boolean deosAccountHasTransactions(String accountName) throws SQLException {
+        try {
+            Account account = getAccountByName(accountName);
+            if (account == null) {
+                return false;
+            }
+            String query = "SELECT * FROM transactions WHERE debitAccountID = ? OR creditAccountID = ? LIMIT 1";
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, account.getAccountID(),
+                    account.getAccountID());
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                rs.close();
+                ps.close();
+                return true;
+            }
+
+            rs.close();
+            ps.close();
+            return false;
+        } catch (SQLException e) {
+            for (Throwable t : e) {
+                if (t instanceof SQLNonTransientConnectionException) {
+                    throw new SQLException("Database connection error.");
+                }
+            }
+
+            throw e;
+        }
     }
 
     public static boolean doesAccountExist(String accountName) throws SQLException {
@@ -80,6 +128,46 @@ public abstract class Account {
         }
 
         return false;
+    }
+
+    public static void deleteAccount(String accountName) throws SQLException {
+        try {
+            Account account = getAccountByName(accountName);
+            if (account == null) {
+                throw new SQLException("Account does not exist.");
+            }
+
+            if (deosAccountHasTransactions(accountName)) {
+                throw new SQLException("Account has transactions.");
+            }
+
+            account.deleteAccount();
+
+            accounts.remove(account);
+            HomeController.getInstance().addAccounts();
+        } catch (SQLException e) {
+            for (Throwable t : e) {
+                if (t instanceof SQLNonTransientConnectionException) {
+                    throw new SQLException("Database connection error.");
+                }
+            }
+
+            throw e;
+        }
+    }
+
+    public static void renameAccount(String oldAccountName, String newAccountName) throws SQLException {
+        Account account = getAccountByName(oldAccountName);
+        if (account == null) {
+            throw new SQLException("Account does not exist.");
+        }
+
+        if (doesAccountExist(newAccountName)) {
+            throw new SQLException("Cannot rename because an account with the same name already exists.");
+        }
+
+        accounts.get(accounts.indexOf(account)).setAccountName(newAccountName);
+        HomeController.getInstance().addAccounts();
     }
 
     @Override
