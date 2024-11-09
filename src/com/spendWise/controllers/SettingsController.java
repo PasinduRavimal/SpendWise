@@ -13,13 +13,13 @@ import com.spendWise.models.UserAccount;
 
 public class SettingsController implements Initializable {
     @FXML
-    private PasswordField newPasswordField;
+    private PasswordField currentPasswordField;
     @FXML
-    private PasswordField confirmPasswordField;
+    private PasswordField newPasswordField;
     @FXML
     private TextField newDisplayNameField;
     @FXML
-    private PasswordField CurrentPassword;
+    private PasswordField ExistingPassword;
     @FXML
     private Button confirmButton;
     @FXML
@@ -30,8 +30,8 @@ public class SettingsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         confirmButton.setOnAction(event -> {
-            String password = newPasswordField.getText();
-            String confirmPassword = confirmPasswordField.getText();
+            String password = currentPasswordField.getText();
+            String confirmPassword = newPasswordField.getText();
             
             if (password.isEmpty() || confirmPassword.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -39,15 +39,17 @@ public class SettingsController implements Initializable {
                 alert.setHeaderText("Empty Fields");
                 alert.setContentText("Please fill all the fields.");
                 alert.showAndWait();
-            }else if (!password.equals(confirmPassword)) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Password Mismatch");
-                alert.setContentText("Passwords do not match.");
-                alert.showAndWait();
             }else{
                 try {
-                    UserAccount.changePassword(password);
+                    if (!UserAccount.validateCurrentPassword(password)) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Invalid Current Password");
+                        alert.setContentText("The current password you entered is incorrect.");
+                        alert.showAndWait();
+                        
+                    }
+                    UserAccount.changePassword(confirmPassword);
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Success");
                     alert.setHeaderText("Password Changed");
@@ -64,12 +66,13 @@ public class SettingsController implements Initializable {
                     alert.setHeaderText("Password Change Failed");
                     alert.setContentText(e.getMessage());
                     alert.showAndWait();
+                }finally {
+                    currentPasswordField.clear();
+                    newPasswordField.clear();
                 }
+        }
 
-
-            }
-
-    });
+            });
 
     changeNameButton.setOnAction(event -> {
         String displayName = newDisplayNameField.getText();
@@ -94,13 +97,14 @@ public class SettingsController implements Initializable {
                 alert.setHeaderText("Display name Change Failed");
                 alert.setContentText(e.getMessage());
                 alert.showAndWait();
-            
+                }finally {
+                    newDisplayNameField.clear();
                 }
         }
     });
 
     deleteButton.setOnAction(event -> {
-        String password = CurrentPassword.getText();
+        String password = ExistingPassword.getText();
         if(password.isEmpty()){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -126,6 +130,8 @@ public class SettingsController implements Initializable {
             alert.setHeaderText("Account Deletion Failed");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
+        }finally {
+            ExistingPassword.clear();
         }
     }
     });

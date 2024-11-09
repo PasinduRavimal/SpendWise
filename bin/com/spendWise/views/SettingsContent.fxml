@@ -19,18 +19,18 @@
                   <Pane prefHeight="107.0" prefWidth="581.0">
                      <children>
                         <Button fx:id="confirmButton" layoutX="193.0" layoutY="79.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="169.0" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Confirm" />
-                        <Label layoutX="42.0" layoutY="11.0" text="New password">
+                        <Label layoutX="42.0" layoutY="11.0" text="Current password">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <Label layoutX="295.0" layoutY="11.0" text="Re-enter password">
+                        <Label layoutX="295.0" layoutY="11.0" text="New password">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <PasswordField fx:id="newPasswordField" layoutX="42.0" layoutY="35.0" prefHeight="30.0" prefWidth="196.0" style="-fx-background-color: #e2aef2;" />
-                        <PasswordField fx:id="confirmPasswordField" layoutX="295.0" layoutY="35.0" prefHeight="30.0" prefWidth="196.0" style="-fx-background-color: #e2aef2;" />
+                        <PasswordField fx:id="currentPasswordField" layoutX="42.0" layoutY="35.0" prefHeight="30.0" prefWidth="196.0" style="-fx-background-color: #e2aef2;" />
+                        <PasswordField fx:id="newPasswordField" layoutX="295.0" layoutY="35.0" prefHeight="30.0" prefWidth="196.0" style="-fx-background-color: #e2aef2;" />
                      </children>
                   </Pane>
                </content>
@@ -68,7 +68,7 @@
                            </font>
                         </Label>
                         <Button fx:id="deleteButton" layoutX="424.0" layoutY="25.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="142.0" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Delete Account" />
-                        <PasswordField fx:id="CurrentPassword" layoutX="187.0" layoutY="23.0" prefHeight="30.0" prefWidth="221.0" style="-fx-background-color: #e2aef2;" />
+                        <PasswordField fx:id="ExistingPassword" layoutX="187.0" layoutY="23.0" prefHeight="30.0" prefWidth="221.0" style="-fx-background-color: #e2aef2;" />
                      </children>
                   </Pane>
                </content>

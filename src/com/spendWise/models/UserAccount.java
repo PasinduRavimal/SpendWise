@@ -123,17 +123,23 @@ public abstract class UserAccount {
         return this.getUsername().hashCode();
     }
 
-    public static void changePassword(String password) {
+    public static void changePassword(String confirmPassword) throws SQLException, IOException {
         UserAccountModel userAccountModel = UserAccountModel.getInstance();
-        userAccountModel.updateUserAccount(userAccountModel.getDisplayName(), password);
+        userAccountModel.updateUserAccount(userAccountModel.getDisplayName(), confirmPassword);
+        userAccountModel.updateDatabase();
     }
-    public static void changeDisplayName(String displayName) {
+    public static void changeDisplayName(String displayName) throws SQLException, IOException {
         UserAccountModel userAccountModel = UserAccountModel.getInstance();
         userAccountModel.updateUserAccount(displayName, userAccountModel.getPassword());
+        userAccountModel.updateDatabase();
     }
     public static void deleteUser() throws SQLException, IOException {
         UserAccountModel userAccountModel = UserAccountModel.getInstance();
         userAccountModel.deleteUserAccount();
+    }
+    public static boolean validateCurrentPassword(String password) {
+        UserAccountModel userAccountModel = UserAccountModel.getInstance();
+        return userAccountModel.getPassword().equals(password);
     }
 
 }
