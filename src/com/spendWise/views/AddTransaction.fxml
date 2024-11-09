@@ -33,6 +33,6 @@
             <Font size="10.0" />
          </font>
       </Text>
-      <Button fx:id="ButtonAddTransaction" layoutX="214.0" layoutY="319.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: #ff9900;" text="Add Transaction" />
+      <Button fx:id="ButtonAddTransaction" layoutX="214.0" layoutY="319.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Add Transaction" />
    </children>
 </AnchorPane>
