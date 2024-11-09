@@ -11,8 +11,10 @@ import com.spendWise.models.Account;
 import com.spendWise.models.Transaction;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -46,13 +48,13 @@ public class AccountController implements Initializable {
     @FXML
     private TableView<Transaction> creditColumn;
     @FXML
-    private TableColumn<Transaction, Timestamp> debitColumnDate;
+    private TableColumn<Transaction, String> debitColumnDate;
     @FXML
     private TableColumn<Transaction, String> debitColumnDescription;
     @FXML
     private TableColumn<Transaction, Double> debitColumnAmount;
     @FXML
-    private TableColumn<Transaction, Timestamp> creditColumnDate;
+    private TableColumn<Transaction, String> creditColumnDate;
     @FXML
     private TableColumn<Transaction, String> creditColumnDescription;
     @FXML
@@ -68,6 +70,14 @@ public class AccountController implements Initializable {
 
         debitColumn.setItems(debitTransactions);
         creditColumn.setItems(creditTransactions);
+
+        debitColumnDate.setCellValueFactory(celldata -> new SimpleStringProperty(celldata.getValue().getTransactionTime().toString()));
+        debitColumnDescription.setCellValueFactory(celldata -> new SimpleStringProperty(celldata.getValue().getDescription()));
+        debitColumnAmount.setCellValueFactory(celldata -> new SimpleDoubleProperty(celldata.getValue().getAmount()).asObject());
+
+        creditColumnDate.setCellValueFactory(celldata -> new SimpleStringProperty(celldata.getValue().getTransactionTime().toString()));
+        creditColumnDescription.setCellValueFactory(celldata -> new SimpleStringProperty(celldata.getValue().getDescription()));
+        creditColumnAmount.setCellValueFactory(celldata -> new SimpleDoubleProperty(celldata.getValue().getAmount()).asObject());
 
         SelectMonthButton.setOnAction(event -> {
             String month = SelectMonthTextField.getText();

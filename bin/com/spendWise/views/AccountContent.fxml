@@ -49,7 +49,7 @@
                     <columns>
                       <TableColumn fx:id="creditColumnDate" editable="false" prefWidth="55.0" sortable="false" text="Date" />
                       <TableColumn fx:id="creditColumnDescription" editable="false" prefWidth="130.0" sortable="false" text="Description" />
-                        <TableColumn fx:id="creditColumntAmount" editable="false" prefWidth="65.0" sortable="false" text="Amount" />
+                        <TableColumn fx:id="creditColumnAmount" editable="false" prefWidth="65.0" sortable="false" text="Amount" />
                     </columns>
                   </TableView>
                </children>
