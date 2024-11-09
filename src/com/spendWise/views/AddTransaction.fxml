@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AddTransactionPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: BEFFC8;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AddTransactionPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: BEFFC8;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.spendWise.controllers.AddTransactionController">
    <children>
       <ChoiceBox fx:id="ChoiceBoxSelectDebetAccount" layoutX="66.0" layoutY="58.0" prefHeight="35.0" prefWidth="446.0" />
       <Label fx:id="LabelSelectDebitAccount" layoutX="66.0" layoutY="29.0" text="Select the Debiting Account">
@@ -16,14 +16,12 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Text fx:id="TextCashAccount" layoutX="78.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cash Account" wrappingWidth="106.61090087890625" />
       <Label fx:id="LabelSelectCredictAccount" layoutX="66.0" layoutY="113.0" prefHeight="20.0" prefWidth="222.0" text="Select the Crediting Account">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
       <ChoiceBox fx:id="ChoiceBoxSelectCreditAccount" layoutX="65.0" layoutY="145.0" prefHeight="35.0" prefWidth="446.0" />
-      <Text fx:id="TextElectricityAccount" layoutX="78.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Electricity Account" wrappingWidth="106.61090087890625" />
       <Label fx:id="LabelSelectTransactionDate" layoutX="66.0" layoutY="200.0" prefHeight="20.0" prefWidth="222.0" text="Select the Transaction Date">
          <font>
             <Font size="14.0" />
