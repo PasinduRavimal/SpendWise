@@ -25,12 +25,10 @@ public class AddTransactionController {
 
         ChoiceBoxSelectCreditAccount.getItems().addAll("Electricity Account", "Water Account", "Transport Account");
 
-        ButtonAddTransaction.setOnAction(event -> addTransaction());
+        ButtonAddTransaction.setOnAction(event -> {
+            
+        });
     }
 
-    private void addTransaction() {
-        
-
-        
-    }
+    
 }
