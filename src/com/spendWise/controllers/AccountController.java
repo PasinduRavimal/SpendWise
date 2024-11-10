@@ -4,6 +4,7 @@ import java.net.*;
 import java.security.Timestamp;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -34,8 +35,8 @@ public class AccountController implements Initializable {
 
     private StringProperty accountTitle = new SimpleStringProperty();
     private Account account;
-    private ObservableList<Transaction> debitTransactions;
-    private ObservableList<Transaction> creditTransactions;
+    private ObservableList<Transaction> debitTransactions = FXCollections.observableArrayList();
+    private ObservableList<Transaction> creditTransactions = FXCollections.observableArrayList();
 
     @FXML
     private Label AccountTitleLabel;
@@ -71,18 +72,24 @@ public class AccountController implements Initializable {
         debitColumn.setItems(debitTransactions);
         creditColumn.setItems(creditTransactions);
 
-        debitColumnDate.setCellValueFactory(celldata -> new SimpleStringProperty(celldata.getValue().getTransactionTime().toString()));
-        debitColumnDescription.setCellValueFactory(celldata -> new SimpleStringProperty(celldata.getValue().getDescription()));
-        debitColumnAmount.setCellValueFactory(celldata -> new SimpleDoubleProperty(celldata.getValue().getAmount()).asObject());
+        debitColumnDate.setCellValueFactory(
+                celldata -> new SimpleStringProperty(celldata.getValue().getTransactionTime().toString()));
+        debitColumnDescription
+                .setCellValueFactory(celldata -> new SimpleStringProperty(celldata.getValue().getDescription()));
+        debitColumnAmount
+                .setCellValueFactory(celldata -> new SimpleDoubleProperty(celldata.getValue().getAmount()).asObject());
 
-        creditColumnDate.setCellValueFactory(celldata -> new SimpleStringProperty(celldata.getValue().getTransactionTime().toString()));
-        creditColumnDescription.setCellValueFactory(celldata -> new SimpleStringProperty(celldata.getValue().getDescription()));
-        creditColumnAmount.setCellValueFactory(celldata -> new SimpleDoubleProperty(celldata.getValue().getAmount()).asObject());
+        creditColumnDate.setCellValueFactory(
+                celldata -> new SimpleStringProperty(celldata.getValue().getTransactionTime().toString()));
+        creditColumnDescription
+                .setCellValueFactory(celldata -> new SimpleStringProperty(celldata.getValue().getDescription()));
+        creditColumnAmount
+                .setCellValueFactory(celldata -> new SimpleDoubleProperty(celldata.getValue().getAmount()).asObject());
 
         SelectMonthButton.setOnAction(event -> {
             String month = SelectMonthTextField.getText();
             if (month.matches("^\\d{4}-(0[1-9]|1[0-2])$")) {
-                // TODO: Implement the logic to select the month
+                setAccount(account, LocalDate.parse(month + "-01", DateTimeFormatter.ISO_LOCAL_DATE));
             } else {
                 Alert alert = new Alert(Alert.AlertType.WARNING,
                         "Invalid month format. Please enter in the format YYYY-MM");
@@ -105,26 +112,77 @@ public class AccountController implements Initializable {
 
         accountTitle.setValue(title.toString());
 
-        debitTransactions = FXCollections.observableArrayList();
-        creditTransactions = FXCollections.observableArrayList();
-
         this.account = account;
 
-        loadTransactions();
+        loadTransactions(null);
 
     }
 
-    public void loadTransactions() {
+    public void setAccount(Account account, LocalDate date) {
+        LocalDate today;
+        if (date == null)
+            today = LocalDate.now();
+        else
+            today = date;
+        StringBuilder title = new StringBuilder();
+        if (account.getAccountName().toLowerCase().contains("account")) {
+            title.append(account.getAccountName());
+        } else {
+            title.append(account.getAccountName()).append(" Account");
+        }
+        title.append(" for the Month of ").append(today.getMonth().toString().substring(0, 1).toUpperCase())
+                .append(today.getMonth().toString().substring(1).toLowerCase()).append(" ").append(today.getYear());
+
+        accountTitle.setValue(title.toString());
+
+        this.account = account;
+
+        loadTransactions(today);
+
+    }
+
+    public void loadTransactions(LocalDate date) {
         ExecutorService executor = Executors.newCachedThreadPool();
-        LocalDate today = LocalDate.now();
+        LocalDate today;
+        if (date == null)
+            today = LocalDate.now();
+        else
+            today = date;
+
+        Platform.runLater(() -> {
+            debitTransactions.clear();
+            creditTransactions.clear();
+        });
+
+        try {
+            Transaction previousMonthBalance;
+            if (today.equals(LocalDate.now())) {
+                previousMonthBalance = Transaction.getBalanceForwarded(account);
+            } else {
+                previousMonthBalance = Transaction.getBalanceOfTheMonth(account,
+                        today.minusMonths(1).getMonthValue(), today.minusMonths(1).getYear());
+            }
+            
+            if (previousMonthBalance != null) {
+                if (previousMonthBalance.getDebitingAccountID() >= 0) {
+                    Platform.runLater(() -> debitTransactions.add(previousMonthBalance));
+                } else {
+                    Platform.runLater(() -> creditTransactions.add(previousMonthBalance));
+                }
+            }
+        } catch (SQLException e) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Couldn't load the previous month balance");
+                alert.getDialogPane().setExpandableContent(new Text(e.getMessage()));
+                alert.showAndWait();
+            });
+        }
 
         Task<ObservableList<Transaction>> debitTask = new Task<ObservableList<Transaction>>() {
             @Override
             protected ObservableList<Transaction> call() throws SQLException {
-                List<Transaction> list = Transaction.getDebitTransactions(account, today.getMonthValue(), today.getYear());
-                for (Transaction transaction : list) {
-                    System.out.println(transaction.getDescription());
-                }
+                List<Transaction> list = Transaction.getDebitTransactions(account, today.getMonthValue(),
+                        today.getYear());
                 return FXCollections.observableArrayList(list);
             }
         };
@@ -132,7 +190,7 @@ public class AccountController implements Initializable {
         executor.execute(debitTask);
 
         debitTask.setOnSucceeded(event -> {
-            Platform.runLater(() -> debitTransactions.setAll(debitTask.getValue()));
+            Platform.runLater(() -> debitTransactions.addAll(debitTask.getValue()));
         });
 
         debitTask.setOnFailed(event -> {
@@ -146,10 +204,8 @@ public class AccountController implements Initializable {
         Task<ObservableList<Transaction>> creditTask = new Task<ObservableList<Transaction>>() {
             @Override
             protected ObservableList<Transaction> call() throws SQLException {
-                List<Transaction> list = Transaction.getCreditTransactions(account, today.getMonthValue(), today.getYear());
-                for (Transaction transaction : list) {
-                    System.out.println(transaction.getDescription());
-                }
+                List<Transaction> list = Transaction.getCreditTransactions(account, today.getMonthValue(),
+                        today.getYear());
                 return FXCollections.observableArrayList(list);
             }
         };
@@ -157,12 +213,12 @@ public class AccountController implements Initializable {
         executor.execute(creditTask);
 
         creditTask.setOnSucceeded(event -> {
-            Platform.runLater(() -> creditTransactions.setAll(creditTask.getValue()));
+            Platform.runLater(() -> creditTransactions.addAll(creditTask.getValue()));
         });
 
         creditTask.setOnFailed(event -> {
             Platform.runLater(() -> {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Couldn't load the debit transactions");
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Couldn't load the credit transactions");
                 alert.getDialogPane().setExpandableContent(new Text(creditTask.getException().getMessage()));
                 alert.showAndWait();
             });
