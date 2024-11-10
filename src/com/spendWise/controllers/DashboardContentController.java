@@ -31,7 +31,7 @@ public class DashboardContentController implements Initializable {
     private static StringProperty lastTransaction3Property = new SimpleStringProperty();
 
     @FXML
-    private Button ButtonAddTransaction, ButtonCorrectError, ButtonEditTransaction;
+    private Button ButtonAddTransaction, ButtonEditTransaction;
 
     @FXML
     private Label cashBalanceLabel;
@@ -65,22 +65,6 @@ public class DashboardContentController implements Initializable {
                 currentStage.initModality(Modality.APPLICATION_MODAL);
                 currentStage.setScene(addTransactionScene);
                 currentStage.setTitle("Add Transaction");
-                currentStage.showAndWait();
-                updateLastTransactions();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-        ButtonCorrectError.setOnAction(event -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/correctTransactionError.fxml"));
-                Parent correctErrorRoot = loader.load();
-                Scene correctErrorScene = new Scene(correctErrorRoot);
-                Stage currentStage = new Stage();
-                currentStage.initModality(Modality.APPLICATION_MODAL);
-                currentStage.setScene(correctErrorScene);
-                currentStage.setTitle("Correct Transaction Error");
                 currentStage.showAndWait();
                 updateLastTransactions();
             } catch (IOException e) {

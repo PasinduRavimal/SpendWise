@@ -27,9 +27,8 @@
                         <Label fx:id="bankBalanceLabel" alignment="CENTER_RIGHT" layoutX="393.0" layoutY="16.0" prefHeight="20.0" prefWidth="160.0" textAlignment="RIGHT" />
                         <Rectangle fx:id="RectangleTotalBalance" arcHeight="5.0" arcWidth="5.0" fill="#e2aef2" height="20.0" layoutX="252.0" layoutY="45.0" stroke="#e2aef2" strokeType="INSIDE" width="160.0" />
                         <Label fx:id="totalBalanceLabel" alignment="CENTER_RIGHT" layoutX="252.0" layoutY="45.0" prefHeight="20.0" prefWidth="160.0" textAlignment="RIGHT" />
-                        <Button fx:id="ButtonEditTransaction" layoutX="225.0" layoutY="82.0" mnemonicParsing="false" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Edit a Transaction" />
-                        <Button fx:id="ButtonCorrectError" layoutX="375.0" layoutY="82.0" mnemonicParsing="false" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Correct an Error" />
-                        <Button fx:id="ButtonAddTransaction" layoutX="75.0" layoutY="82.0" mnemonicParsing="false" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Add a Transaction" />
+                        <Button fx:id="ButtonEditTransaction" layoutX="303.0" layoutY="82.0" mnemonicParsing="false" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Edit a Transaction" />
+                        <Button fx:id="ButtonAddTransaction" layoutX="153.0" layoutY="82.0" mnemonicParsing="false" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Add a Transaction" />
                      </children>
                   </AnchorPane>
             </content>
@@ -48,21 +47,18 @@
                               <Font size="14.0" />
                            </font>
                         </Text>
-                        <Button fx:id="ButtonUndo" layoutX="435.0" layoutY="8.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="111.0" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Undo" />
                         <Rectangle fx:id="RctangleTransaction" arcHeight="5.0" arcWidth="5.0" fill="#ffe0b3" height="35.0" layoutX="21.0" layoutY="89.0" stroke="#ffe0b3" strokeType="INSIDE" width="526.0" />
                         <Text fx:id="lastTransaction3" layoutX="30.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Transaction 3">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Text>
-                        <Button fx:id="ButtonUndo" layoutX="435.0" layoutY="89.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="111.0" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Undo" />
                         <Rectangle fx:id="RctangleTransaction" arcHeight="5.0" arcWidth="5.0" fill="#ffe0b3" height="35.0" layoutX="21.0" layoutY="48.0" stroke="#ffe0b3" strokeType="INSIDE" width="526.0" />
                         <Text fx:id="lastTransaction2" layoutX="30.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Transaction 2">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Text>
-                        <Button fx:id="ButtonUndo" layoutX="435.0" layoutY="48.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="111.0" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Undo" />
                      </children>
                   </AnchorPane>
             </content>

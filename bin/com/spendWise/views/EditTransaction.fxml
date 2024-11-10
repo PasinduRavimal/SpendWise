@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="EditTransactionPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: BEFFC8;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="EditTransactionPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: BEFFC8;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.spendWise.controllers.EditTransactionController">
    <children>
       <ChoiceBox fx:id="ChiceBoxSelectDebetAccount" layoutX="66.0" layoutY="58.0" prefHeight="35.0" prefWidth="446.0" />
       <Label fx:id="LabelSelectDebitAccount" layoutX="66.0" layoutY="29.0" text="Select the Debiting Account">
@@ -35,7 +35,6 @@
             <Font size="10.0" />
          </font>
       </Text>
-      <Button fx:id="ButtonEditTransaction" layoutX="130.0" layoutY="320.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Edit Transaction" />
-      <Button fx:id="ButtonDeleteTransaction" layoutX="320.0" layoutY="320.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Delete Transaction" />
+      <Button fx:id="ButtonSearchTransactions" layoutX="214.0" layoutY="320.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Search Transactions" />
    </children>
 </AnchorPane>
