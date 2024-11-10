@@ -111,9 +111,24 @@ public class DashboardContentController implements Initializable {
     public static void updateLastTransactions() {
         try {
             List<Transaction> transactions = Transaction.getLastTransactions(3);
-            lastTransaction1Property.setValue(transactions.get(0).getDescription() + " with amount: " + transactions.get(0).getAmount());
-            lastTransaction2Property.setValue(transactions.get(1).getDescription() + " with amount: " + transactions.get(1).getAmount());
-            lastTransaction3Property.setValue(transactions.get(2).getDescription() + " with amount: " + transactions.get(2).getAmount());
+            if (transactions.size() == 0) {
+                lastTransaction1Property.setValue("No transactions yet");
+                lastTransaction2Property.setValue("No transactions yet");
+                lastTransaction3Property.setValue("No transactions yet");
+                return;
+            } else if (transactions.size() == 1){
+                lastTransaction1Property.setValue(transactions.get(0).getDescription() + " with amount: " + transactions.get(0).getAmount());
+                lastTransaction2Property.setValue("No transactions yet");
+                lastTransaction3Property.setValue("No transactions yet");
+            } else if (transactions.size() == 2){
+                lastTransaction1Property.setValue(transactions.get(0).getDescription() + " with amount: " + transactions.get(0).getAmount());
+                lastTransaction2Property.setValue(transactions.get(1).getDescription() + " with amount: " + transactions.get(1).getAmount());
+                lastTransaction3Property.setValue("No transactions yet");
+            } else {
+                lastTransaction1Property.setValue(transactions.get(0).getDescription() + " with amount: " + transactions.get(0).getAmount());
+                lastTransaction2Property.setValue(transactions.get(1).getDescription() + " with amount: " + transactions.get(1).getAmount());
+                lastTransaction3Property.setValue(transactions.get(2).getDescription() + " with amount: " + transactions.get(2).getAmount());
+            }
             setBankBalance(Account.getBankBalance());
             setCashBalance(Account.getCashBookBalance());
         } catch (SQLException e) {
