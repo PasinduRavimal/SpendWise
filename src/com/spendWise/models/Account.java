@@ -266,6 +266,10 @@ public abstract class Account {
         return balance;
     }
 
+    public static Account getAccountByID(int accountID){
+        return accounts.parallelStream().filter(account -> account.getAccountID() == accountID).findAny().orElse(null);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {

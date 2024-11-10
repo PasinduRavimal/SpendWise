@@ -2,8 +2,6 @@ package com.spendWise.controllers;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
 import java.util.*;
 import java.util.ResourceBundle;
 
@@ -46,14 +44,8 @@ public class HomeController implements Initializable {
         contentController.setContent("dashboard");
 
         dashboardPane.setOnMouseClicked(event -> {
-            try {
-                DashboardContentController.setBankBalance(Account.getBankBalance());
-                DashboardContentController.setCashBalance(Account.getCashBookBalance());
-            } catch (SQLWarning e){
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            DashboardContentController.updateLastTransactions();
+
             contentController.setContent("dashboard");
         });
         generalJournalPane.setOnMouseClicked(event -> {
@@ -80,20 +72,13 @@ public class HomeController implements Initializable {
 
     }
 
-    public static HomeController getInstance(){
+    public static HomeController getInstance() {
         return instance;
     }
 
-    public synchronized void addAccounts(){
+    public synchronized void addAccounts() {
 
-        try {
-            DashboardContentController.setBankBalance(Account.getBankBalance());
-            DashboardContentController.setCashBalance(Account.getCashBookBalance());
-        } catch (SQLWarning e){
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        DashboardContentController.updateLastTransactions();
 
         Platform.runLater(() -> {
             try {
@@ -115,11 +100,12 @@ public class HomeController implements Initializable {
                     titledPane.setMaxWidth(190);
 
                     titledPane.setOnMouseClicked(event -> {
-                        FXMLLoader loader = new FXMLLoader(HomeController.class.getResource("../views/AccountContent.fxml"));
+                        FXMLLoader loader = new FXMLLoader(
+                                HomeController.class.getResource("../views/AccountContent.fxml"));
                         AccountController controller = new AccountController();
                         controller.setAccount(account);
                         loader.setController(controller);
-                        try{
+                        try {
                             Pane root = loader.load();
                             contentController.setContentByFXML(root);
                         } catch (IOException e) {
@@ -148,7 +134,8 @@ public class HomeController implements Initializable {
         public ContentController() {
             try {
                 contentMap.put("dashboard", FXMLLoader.load(getClass().getResource("../views/DashboardContent.fxml")));
-                contentMap.put("accounts", FXMLLoader.load(getClass().getResource("../views/AccountSettingsContent.fxml")));
+                contentMap.put("accounts",
+                        FXMLLoader.load(getClass().getResource("../views/AccountSettingsContent.fxml")));
                 contentMap.put("generaljournal", FXMLLoader.load(getClass().getResource("../views/journalentry.fxml")));
                 contentMap.put("settings", FXMLLoader.load(getClass().getResource("../views/SettingsContent.fxml")));
                 contentMap.put("help", FXMLLoader.load(getClass().getResource("../views/HelpContent.fxml")));
@@ -164,7 +151,7 @@ public class HomeController implements Initializable {
             contentPane.getChildren().add(contentMap.get(key));
         }
 
-        public void setContentByFXML(Pane root){
+        public void setContentByFXML(Pane root) {
             contentPane.getChildren().clear();
             contentPane.getChildren().add(root);
         }

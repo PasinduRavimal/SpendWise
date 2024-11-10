@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane id="EditTransactionPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: BEFFC8;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="SelectTransactionPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: BEFFC8;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <GridPane prefHeight="400.0" prefWidth="600.0">
         <columnConstraints>
@@ -41,13 +41,10 @@
                   </HBox>
                </children>
             </GridPane>
-            <TableView prefHeight="200.0" prefWidth="10.0">
+            <TableView fx:id="TableViewSelectTransactions" prefHeight="200.0" prefWidth="10.0">
               <columns>
-                <TableColumn editable="false" prefWidth="75.0" sortable="false" text="Date" />
-                <TableColumn prefWidth="100.0" text="Debit Account" />
-                  <TableColumn prefWidth="100.0" text="Credit Account" />
-                  <TableColumn prefWidth="250.0" text="Description" />
-                  <TableColumn prefWidth="75.0" text="Amount" />
+                  <TableColumn fx:id="descriptionColumn" editable="false" prefWidth="450.0" sortable="false" text="Description" />
+                  <TableColumn fx:id="amountColumn" editable="false" prefWidth="150.0" sortable="false" text="Amount" />
               </columns>
             </TableView>
          </children>

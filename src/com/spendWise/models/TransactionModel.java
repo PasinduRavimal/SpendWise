@@ -2,6 +2,7 @@ package com.spendWise.models;
 
 import java.sql.*;
 
+import com.spendWise.controllers.DashboardContentController;
 import com.spendWise.util.DatabaseConnection;
 
 public class TransactionModel extends Transaction {
@@ -93,6 +94,8 @@ public class TransactionModel extends Transaction {
                     creditingAccountID, transactionTime, amount, description);
             ps.executeUpdate();
             ps.close();
+
+            DashboardContentController.updateLastTransactions();
         } catch (SQLException e) {
             e.printStackTrace();
             for (Throwable t : e) {
@@ -113,6 +116,8 @@ public class TransactionModel extends Transaction {
             PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, transactionID);
             ps.executeUpdate();
             ps.close();
+
+            DashboardContentController.updateLastTransactions();
         } catch (SQLException e) {
             e.printStackTrace();
             for (Throwable t : e) {
@@ -134,6 +139,8 @@ public class TransactionModel extends Transaction {
                     transactionTime, amount, description, transactionID);
             ps.executeUpdate();
             ps.close();
+
+            DashboardContentController.updateLastTransactions();
         } catch (SQLException e) {
             e.printStackTrace();
             for (Throwable t : e) {

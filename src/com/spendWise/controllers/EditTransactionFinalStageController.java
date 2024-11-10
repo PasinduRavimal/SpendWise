@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 import com.spendWise.models.Account;
 import com.spendWise.models.Transaction;
-import com.spendWise.models.UserAccount;
 import com.spendWise.util.StringAccountConverter;
 
 import javafx.fxml.FXML;
@@ -16,7 +15,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
-public class AddTransactionController {
+public class EditTransactionFinalStageController {
+
+    private Transaction transaction;
 
     @FXML
     private ComboBox<Account> creditAccountComboBox;
@@ -42,6 +43,12 @@ public class AddTransactionController {
 
             debitAccountComboBox.getItems().addAll(Account.getAccountsList());
             debitAccountComboBox.setConverter(new StringAccountConverter());
+
+            creditAccountComboBox.getSelectionModel().select(Account.getAccountByID(transaction.getCreditingAccountID()));
+            debitAccountComboBox.getSelectionModel().select(Account.getAccountByID(transaction.getDebitingAccountID()));
+            DatePickerSelectTransactionDate.setValue(LocalDate.parse(transaction.getTransactionTime().toString().substring(0, 10)));
+            TextFieldAmount.setText(String.valueOf(transaction.getAmount()));
+            TextFieldDescription.setText(transaction.getDescription());
 
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Error loading accounts");
@@ -83,11 +90,14 @@ public class AddTransactionController {
                     return;
                 }
 
-                Transaction trx = Transaction.getNewTransaction(UserAccount.getCurrentUser().getUsername(), debitAccountComboBox.getValue().getAccountID(),
-                creditAccountComboBox.getValue().getAccountID(), Timestamp.valueOf(DatePickerSelectTransactionDate.getValue().toString() + " 00:00:00"), Double.parseDouble(TextFieldAmount.getText()), TextFieldDescription.getText());
+                transaction.setDebitingAccountID(debitAccountComboBox.getValue().getAccountID());
+                transaction.setCreditingAccountID(creditAccountComboBox.getValue().getAccountID());
+                transaction.setTransactionTime(Timestamp.valueOf(DatePickerSelectTransactionDate.getValue().atStartOfDay()));
+                transaction.setAmount(Double.parseDouble(TextFieldAmount.getText()));
+                transaction.setDescription(TextFieldDescription.getText());
                 try{
-                    trx.saveTransaction();
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Transaction saved successfully");
+                    transaction.updateTransaction();
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Transaction updated successfully");
                     alert.show();
                     this.ButtonAddTransaction.getScene().getWindow().hide();
                     creditAccountComboBox.getSelectionModel().clearSelection();
@@ -96,11 +106,15 @@ public class AddTransactionController {
                     TextFieldAmount.clear();
                     TextFieldDescription.clear();
                 } catch (SQLException e) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "Error saving transaction");
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Error updating transaction");
                     alert.showAndWait();
                 }
             }
         });
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
     }
 
 }
