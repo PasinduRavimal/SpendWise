@@ -230,6 +230,14 @@ public class DatabaseConnection {
             statement.addBatch(
                     "CREATE TABLE `transactions` (`transactionID` INT NOT NULL AUTO_INCREMENT , `username` VARCHAR(50) NOT NULL , `debitAccountID` INT NOT NULL , `creditAccountID` INT NOT NULL , `transactionTime` DATETIME NOT NULL , `amount` DOUBLE NOT NULL , `description` VARCHAR(255) , PRIMARY KEY (`transactionID`)) ENGINE = InnoDB; ");
 
+            statement.addBatch("CREATE TABLE generaljournal (" +
+                    "  transaction_id int(11) NOT NULL," +
+                    "  date date NOT NULL," +
+                    "  account_id int(11) NOT NULL," +
+                    "  is_credit tinyint(1) NOT NULL," +
+                    "  amount int(11) NOT NULL" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;");
+                    
             statement.addBatch("ALTER TABLE `transactions` ADD INDEX(`debitAccountID`, `creditAccountID`);");
 
             statement.addBatch(
@@ -306,40 +314,40 @@ public class DatabaseConnection {
                     "FROM transactionssummary" +
                     "ORDER BY accountID, transactionMonth;");
 
-            statement.addBatch("create view forwardedbalances as" + 
-                    "SELECT " + 
-                    "    accountID," + 
-                    "    transactionMonth," + 
-                    "    debitSum," + 
-                    "    creditSum," + 
-                    "    cumulativeDebitSum," + 
-                    "    cumulativeCreditSum" + 
-                    "FROM cumulativesummary c" + 
-                    "WHERE transactionMonth < DATE_FORMAT(curdate(), '%Y-%m-01')" + 
-                    "  AND (accountID, transactionMonth) IN (" + 
-                    "      SELECT accountID, MAX(transactionMonth)" + 
-                    "      FROM cumulativesummary" + 
-                    "      WHERE transactionMonth < DATE_FORMAT(curdate(), '%Y-%m-01')" + 
-                    "      GROUP BY accountID" + 
-                    "  )" + 
+            statement.addBatch("create view forwardedbalances as" +
+                    "SELECT " +
+                    "    accountID," +
+                    "    transactionMonth," +
+                    "    debitSum," +
+                    "    creditSum," +
+                    "    cumulativeDebitSum," +
+                    "    cumulativeCreditSum" +
+                    "FROM cumulativesummary c" +
+                    "WHERE transactionMonth < DATE_FORMAT(curdate(), '%Y-%m-01')" +
+                    "  AND (accountID, transactionMonth) IN (" +
+                    "      SELECT accountID, MAX(transactionMonth)" +
+                    "      FROM cumulativesummary" +
+                    "      WHERE transactionMonth < DATE_FORMAT(curdate(), '%Y-%m-01')" +
+                    "      GROUP BY accountID" +
+                    "  )" +
                     "ORDER BY accountID;");
 
-            statement.addBatch("create view currentbalances as" + 
-                    "SELECT " + 
-                    "    accountID," + 
-                    "    transactionMonth," + 
-                    "    debitSum," + 
-                    "    creditSum," + 
-                    "    cumulativeDebitSum," + 
-                    "    cumulativeCreditSum" + 
-                    "FROM cumulativesummary c" + 
-                    "WHERE transactionMonth = DATE_FORMAT(curdate(), '%Y-%m-01')" + 
-                    "  AND (accountID, transactionMonth) IN (" + 
-                    "      SELECT accountID, MAX(transactionMonth)" + 
-                    "      FROM cumulativesummary" + 
-                    "      WHERE transactionMonth = DATE_FORMAT(curdate(), '%Y-%m-01')" + 
-                    "      GROUP BY accountID" + 
-                    "  )" + 
+            statement.addBatch("create view currentbalances as" +
+                    "SELECT " +
+                    "    accountID," +
+                    "    transactionMonth," +
+                    "    debitSum," +
+                    "    creditSum," +
+                    "    cumulativeDebitSum," +
+                    "    cumulativeCreditSum" +
+                    "FROM cumulativesummary c" +
+                    "WHERE transactionMonth = DATE_FORMAT(curdate(), '%Y-%m-01')" +
+                    "  AND (accountID, transactionMonth) IN (" +
+                    "      SELECT accountID, MAX(transactionMonth)" +
+                    "      FROM cumulativesummary" +
+                    "      WHERE transactionMonth = DATE_FORMAT(curdate(), '%Y-%m-01')" +
+                    "      GROUP BY accountID" +
+                    "  )" +
                     "ORDER BY accountID;");
             statement.executeBatch();
 
