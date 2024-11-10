@@ -11,9 +11,24 @@ public abstract class Account {
     private volatile static UserAccount currentUser;
 
     public abstract int getAccountID();
+
     public abstract String getAccountName();
+
     public abstract void setAccountName(String accountName) throws SQLException;
+
     public abstract void deleteAccount() throws SQLException;
+
+    public abstract double getAccountBalance() throws SQLException;
+
+    public abstract Transaction getForwardedBalanceOfTheMonth(int month, int year) throws java.sql.SQLException;
+
+    public abstract Transaction getBalanceOfTheMonth(int month, int year) throws java.sql.SQLException;
+
+    public abstract Transaction getBalanceForwarded() throws java.sql.SQLException;
+
+    public abstract List<Transaction> getCreditTransactions(int month, int year) throws java.sql.SQLException;
+
+    public abstract List<Transaction> getDebitTransactions(int month, int year) throws java.sql.SQLException;
 
     public static synchronized List<Account> getAccountsList() throws SQLException {
         if (currentUser == null) {
@@ -40,10 +55,6 @@ public abstract class Account {
 
             return accounts;
         } catch (SQLException e) {
-            // TODO: Remove following code
-            DatabaseConnection.getStatement()
-                    .executeUpdate("ALTER TABLE accounttypes ADD COLUMN accountOwner VARCHAR(50) NOT NULL");
-
             for (Throwable t : e) {
                 if (t instanceof SQLNonTransientConnectionException) {
                     throw new SQLException("Database connection error.");
@@ -88,7 +99,7 @@ public abstract class Account {
         return null;
     }
 
-    public static boolean deosAccountHasTransactions(String accountName) throws SQLException {
+    public static boolean doesAccountHasTransactions(String accountName) throws SQLException {
         try {
             Account account = getAccountByName(accountName);
             if (account == null) {
@@ -137,7 +148,7 @@ public abstract class Account {
                 throw new SQLException("Account does not exist.");
             }
 
-            if (deosAccountHasTransactions(accountName)) {
+            if (doesAccountHasTransactions(accountName)) {
                 throw new SQLException("Account has transactions.");
             }
 
@@ -168,6 +179,120 @@ public abstract class Account {
 
         accounts.get(accounts.indexOf(account)).setAccountName(newAccountName);
         HomeController.getInstance().addAccounts();
+    }
+
+    public static double getCashBookBalance() throws SQLException {
+        if (currentUser == null) {
+            throw new IllegalStateException("User not logged in.");
+        }
+
+        getAccountsList();
+
+        List<Account> cbaccounts = new ArrayList<>();
+        int accountCount = 0;
+
+        for (Account account : accounts) {
+            if (account.getAccountName().toLowerCase().contains("cashbook")) {
+                cbaccounts.add(account);
+                accountCount++;
+            } else if (account.getAccountName().toLowerCase().contains("cash book")) {
+                cbaccounts.add(account);
+                accountCount++;
+            }
+        }
+
+        if (accountCount == 0) {
+            throw new SQLWarning("Cash book not found.");
+        } else if (accountCount > 1) {
+            throw new SQLWarning("Multiple cash books found. Cash book balance is the sum of all cash books.");
+        }
+
+        double balance = 0;
+
+        for (Account account : cbaccounts) {
+            try {
+                String query = "SELECT * FROM currentbalances WHERE accountID = ?";
+                PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, account.getAccountID());
+                var rs = ps.executeQuery();
+
+                if (rs.next()) {
+                    double creditbalance = rs.getDouble("cumulativeCreditSum");
+                    double debitbalance = rs.getDouble("cumulativeDebitSum");
+                    balance = balance + debitbalance - creditbalance;
+                }
+
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                for (Throwable t : e) {
+                    if (t instanceof SQLNonTransientConnectionException) {
+                        throw new SQLException("Database connection error.");
+                    }
+                }
+
+                throw e;
+            }
+        }
+
+        return balance;
+    }
+
+    public static double getBankBalance() throws SQLException {
+        if (currentUser == null) {
+            throw new IllegalStateException("User not logged in.");
+        }
+
+        getAccountsList();
+
+        List<Account> bbaccounts = new ArrayList<>();
+        int accountCount = 0;
+
+        for (Account account : accounts) {
+            if (account.getAccountName().toLowerCase().contains("bankaccount")) {
+                bbaccounts.add(account);
+                accountCount++;
+            } else if (account.getAccountName().toLowerCase().contains("bank account")) {
+                bbaccounts.add(account);
+                accountCount++;
+            }
+        }
+
+        if (accountCount > 1) {
+            throw new SQLWarning("Multiple bank accounts found. Bank balance is the sum of all bank accounts.");
+        } else if (accountCount == 0) {
+            throw new SQLWarning("Bank account not found.");
+        }
+
+        double balance = 0;
+
+        for (Account account : bbaccounts) {
+
+            try {
+                String query = "SELECT * FROM currentbalances WHERE accountID = ?";
+                PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, account.getAccountID());
+                var rs = ps.executeQuery();
+
+                if (rs.next()) {
+                    double creditbalance = rs.getDouble("cumulativeCreditSum");
+                    double debitbalance = rs.getDouble("cumulativeDebitSum");
+                    balance = balance + debitbalance - creditbalance;
+                }
+
+                rs.close();
+                ps.close();
+
+            } catch (SQLException e) {
+                for (Throwable t : e) {
+                    if (t instanceof SQLNonTransientConnectionException) {
+                        throw new SQLException("Database connection error.");
+                    }
+                }
+
+                throw e;
+            }
+        }
+
+        return balance;
     }
 
     @Override

@@ -48,7 +48,7 @@ public class AccountSettingsController implements Initializable {
                 if (Account.doesAccountExist(mainAccountNameTextField.getText())) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Account does not exist.");
                     alert.showAndWait();
-                } else if (Account.deosAccountHasTransactions(mainAccountNameTextField.getText())) {
+                } else if (Account.doesAccountHasTransactions(mainAccountNameTextField.getText())) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Account has transactions.");
                     alert.showAndWait();
                 } else {

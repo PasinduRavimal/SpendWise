@@ -2,6 +2,8 @@ package com.spendWise.controllers;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.util.*;
 import java.util.ResourceBundle;
 
@@ -44,6 +46,14 @@ public class HomeController implements Initializable {
         contentController.setContent("dashboard");
 
         dashboardPane.setOnMouseClicked(event -> {
+            try {
+                DashboardContentController.setBankBalance(Account.getBankBalance());
+                DashboardContentController.setCashBalance(Account.getCashBookBalance());
+            } catch (SQLWarning e){
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             contentController.setContent("dashboard");
         });
         generalJournalPane.setOnMouseClicked(event -> {
@@ -75,6 +85,16 @@ public class HomeController implements Initializable {
     }
 
     public synchronized void addAccounts(){
+
+        try {
+            DashboardContentController.setBankBalance(Account.getBankBalance());
+            DashboardContentController.setCashBalance(Account.getCashBookBalance());
+        } catch (SQLWarning e){
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         Platform.runLater(() -> {
             try {
                 AnchorPane anchorPane = (AnchorPane) accountsStaticPane.getContent();

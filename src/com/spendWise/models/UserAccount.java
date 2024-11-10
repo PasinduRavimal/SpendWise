@@ -3,6 +3,7 @@ package com.spendWise.models;
 import java.io.IOException;
 import java.sql.*;
 
+import com.spendWise.controllers.DashboardContentController;
 import com.spendWise.util.*;
 
 public abstract class UserAccount {
@@ -62,6 +63,7 @@ public abstract class UserAccount {
             UserAccount account = UserAccountModel.getUserAccount(username, password);
 
             Account.updateCurrentUser(account);
+            DashboardContentController.setUserLabel(account.getDisplayName());
 
             return account;
 

@@ -1,7 +1,6 @@
 package com.spendWise.controllers;
 
 import java.net.*;
-import java.security.Timestamp;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -15,7 +14,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -89,7 +87,7 @@ public class AccountController implements Initializable {
         SelectMonthButton.setOnAction(event -> {
             String month = SelectMonthTextField.getText();
             if (month.matches("^\\d{4}-(0[1-9]|1[0-2])$")) {
-                setAccount(account, LocalDate.parse(month + "-01", DateTimeFormatter.ISO_LOCAL_DATE));
+                setAccount(LocalDate.parse(month + "-01", DateTimeFormatter.ISO_LOCAL_DATE));
             } else {
                 Alert alert = new Alert(Alert.AlertType.WARNING,
                         "Invalid month format. Please enter in the format YYYY-MM");
@@ -118,7 +116,7 @@ public class AccountController implements Initializable {
 
     }
 
-    public void setAccount(Account account, LocalDate date) {
+    public void setAccount(LocalDate date) {
         LocalDate today;
         if (date == null)
             today = LocalDate.now();
@@ -134,8 +132,6 @@ public class AccountController implements Initializable {
                 .append(today.getMonth().toString().substring(1).toLowerCase()).append(" ").append(today.getYear());
 
         accountTitle.setValue(title.toString());
-
-        this.account = account;
 
         loadTransactions(today);
 
@@ -157,9 +153,9 @@ public class AccountController implements Initializable {
         try {
             Transaction previousMonthBalance;
             if (today.equals(LocalDate.now())) {
-                previousMonthBalance = Transaction.getBalanceForwarded(account);
+                previousMonthBalance = account.getBalanceForwarded();
             } else {
-                previousMonthBalance = Transaction.getForwardedBalanceOfTheMonth(account, today.getMonthValue(), today.getYear());
+                previousMonthBalance = account.getForwardedBalanceOfTheMonth(today.getMonthValue(), today.getYear());
             }
 
             if (previousMonthBalance != null) {
@@ -180,7 +176,7 @@ public class AccountController implements Initializable {
         Task<ObservableList<Transaction>> debitTask = new Task<ObservableList<Transaction>>() {
             @Override
             protected ObservableList<Transaction> call() throws SQLException {
-                List<Transaction> list = Transaction.getDebitTransactions(account, today.getMonthValue(),
+                List<Transaction> list = account.getDebitTransactions(today.getMonthValue(),
                         today.getYear());
                 return FXCollections.observableArrayList(list);
             }
@@ -203,8 +199,7 @@ public class AccountController implements Initializable {
         Task<ObservableList<Transaction>> creditTask = new Task<ObservableList<Transaction>>() {
             @Override
             protected ObservableList<Transaction> call() throws SQLException {
-                List<Transaction> list = Transaction.getCreditTransactions(account, today.getMonthValue(),
-                        today.getYear());
+                List<Transaction> list = account.getCreditTransactions(today.getMonthValue(), today.getYear());
                 return FXCollections.observableArrayList(list);
             }
         };
