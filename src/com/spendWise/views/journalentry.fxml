@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #eeccff;" xmlns="http://javafx.com/javafx/23" fx:controller="com.spendWise.controllers.JournalEntryController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #eeccff;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.spendWise.controllers.JournalEntryController">
 <VBox spacing="10" alignment="TOP_CENTER">
     <Label text="General Journal Entry" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
     

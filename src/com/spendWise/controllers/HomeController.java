@@ -26,6 +26,8 @@ public class HomeController implements Initializable {
     @FXML
     private TitledPane accountsPane;
     @FXML
+    private TitledPane generalJournalPane;
+    @FXML
     private TitledPane settingsPane;
     @FXML
     private TitledPane helpPane;
@@ -43,6 +45,9 @@ public class HomeController implements Initializable {
 
         dashboardPane.setOnMouseClicked(event -> {
             contentController.setContent("dashboard");
+        });
+        generalJournalPane.setOnMouseClicked(event -> {
+            contentController.setContent("generaljournal");
         });
         settingsPane.setOnMouseClicked(event -> {
             contentController.setContent("settings");
@@ -124,6 +129,7 @@ public class HomeController implements Initializable {
             try {
                 contentMap.put("dashboard", FXMLLoader.load(getClass().getResource("../views/DashboardContent.fxml")));
                 contentMap.put("accounts", FXMLLoader.load(getClass().getResource("../views/AccountSettingsContent.fxml")));
+                contentMap.put("generaljournal", FXMLLoader.load(getClass().getResource("../views/journalentry.fxml")));
                 contentMap.put("settings", FXMLLoader.load(getClass().getResource("../views/SettingsContent.fxml")));
                 contentMap.put("help", FXMLLoader.load(getClass().getResource("../views/HelpContent.fxml")));
             } catch (IOException e) {

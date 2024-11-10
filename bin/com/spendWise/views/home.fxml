@@ -42,14 +42,11 @@
                       <TitledPane fx:id="dashboardPane" animated="false" collapsible="false" expanded="false" text="Dashboard" />
                         <TitledPane fx:id="accountsPane" animated="false" text="Accounts">
                            <content>
-                              <AnchorPane maxHeight="-Infinity" maxWidth="190.0" minHeight="-Infinity" prefHeight="190.0" prefWidth="190.0">
+                              <AnchorPane maxHeight="-Infinity" maxWidth="180.0" minHeight="-Infinity" prefHeight="180.0" prefWidth="190.0">
                                  </AnchorPane>
                            </content>
                         </TitledPane>
-                        <TitledPane animated="false" collapsible="false" expanded="false" text="General Journal">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                          </content>
+                        <TitledPane fx:id="generalJournalPane" animated="false" collapsible="false" expanded="false" text="General Journal">
                         </TitledPane>
                       <TitledPane fx:id="settingsPane" animated="false" collapsible="false" expanded="false" text="Settings" />
                         <TitledPane fx:id="helpPane" animated="false" collapsible="false" expanded="false" text="Help" />
