@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import com.spendWise.config.Config;
 
 import java.sql.*;
+import java.sql.Date;
 
 /**
  * Contains the database connection information and methods to connect to the
@@ -197,6 +198,8 @@ public class DatabaseConnection {
                     ps.setDouble(i, (double) value);
                 } else if (value instanceof Timestamp) {
                     ps.setTimestamp(i, (Timestamp) value);
+                } else if (value instanceof Date){
+                    ps.setDate(i, (Date) value);
                 } else {
                     throw new UnsupportedOperationException("Type not implemented");
                 }
@@ -237,7 +240,7 @@ public class DatabaseConnection {
                     "  is_credit tinyint(1) NOT NULL," +
                     "  amount int(11) NOT NULL" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;");
-                    
+
             statement.addBatch("ALTER TABLE `transactions` ADD INDEX(`debitAccountID`, `creditAccountID`);");
 
             statement.addBatch(

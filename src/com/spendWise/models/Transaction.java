@@ -2,6 +2,7 @@ package com.spendWise.models;
 
 import java.util.*;
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -42,11 +43,52 @@ public abstract class Transaction {
 
     public abstract void updateTransaction() throws SQLException;
 
+    public static Transaction getForwardedBalanceOfTheMonth(Account account, int month, int Year)
+            throws SQLException {
+        try {
+            String username = UserAccount.getCurrentUser().getUsername();
+            String query = "SELECT * FROM transactionssummary WHERE accountID = ? AND transactionMonth < ? ORDER BY accountID, transactionMonth DESC LIMIT 1;";
+            PreparedStatement ps;
+            Date date = Date.valueOf(LocalDate.of(Year, month, 1));
+            ps = DatabaseConnection.getPreparedStatement(query, account.getAccountID(), date);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                double creditAmount = rs.getDouble("creditSum");
+                double debitAmount = rs.getDouble("debitSum");
+                String out = date.toLocalDate().toString();
+
+                if (creditAmount > debitAmount) {
+                    return new TransactionModel(username, -1, account.getAccountID(),
+                            Timestamp.valueOf(out + " 00:00:00"), creditAmount - debitAmount,
+                            "Balance Brought Forward");
+                } else if (debitAmount > creditAmount) {
+                    return new TransactionModel(username, account.getAccountID(), -1,
+                            Timestamp.valueOf(out + " 00:00:00"), debitAmount - creditAmount,
+                            "Balance Brought Forward");
+                }
+            }
+            rs.close();
+            ps.close();
+            return null;
+        } catch (SQLException e) {
+            for (Throwable t : e) {
+                if (t instanceof SQLNonTransientConnectionException) {
+                    throw new SQLException("Database connection error.");
+                }
+            }
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
     public static Transaction getBalanceOfTheMonth(Account account, int month, int Year)
             throws SQLException {
         try {
             String username = UserAccount.getCurrentUser().getUsername();
-            String query = "SELECT * FROM transactionssummary WHERE accountID = ? AND transactionMonth < ?";
+            String query = "SELECT * FROM transactionssummary WHERE accountID = ? AND MONTH(transactionMonth) = ? AND YEAR(transactionMonth) = ?";
             PreparedStatement ps;
             ps = DatabaseConnection.getPreparedStatement(query, account.getAccountID(), month, Year);
             ResultSet rs = ps.executeQuery();

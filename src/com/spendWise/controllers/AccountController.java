@@ -159,10 +159,9 @@ public class AccountController implements Initializable {
             if (today.equals(LocalDate.now())) {
                 previousMonthBalance = Transaction.getBalanceForwarded(account);
             } else {
-                previousMonthBalance = Transaction.getBalanceOfTheMonth(account,
-                        today.minusMonths(1).getMonthValue(), today.minusMonths(1).getYear());
+                previousMonthBalance = Transaction.getForwardedBalanceOfTheMonth(account, today.getMonthValue(), today.getYear());
             }
-            
+
             if (previousMonthBalance != null) {
                 if (previousMonthBalance.getDebitingAccountID() >= 0) {
                     Platform.runLater(() -> debitTransactions.add(previousMonthBalance));
