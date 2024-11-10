@@ -89,14 +89,8 @@ public abstract class Account {
     }
 
     public static Account getAccountByName(String accountName) throws SQLException {
-        getAccountsList();
-        for (Account account : accounts) {
-            if (account.getAccountName().equals(accountName)) {
-                return account;
-            }
-        }
-
-        return null;
+        return getAccountsList().parallelStream().filter(account -> account.getAccountName().equals(accountName)).findAny()
+                .orElse(null);
     }
 
     public static boolean doesAccountHasTransactions(String accountName) throws SQLException {
@@ -131,14 +125,7 @@ public abstract class Account {
     }
 
     public static boolean doesAccountExist(String accountName) throws SQLException {
-        getAccountsList();
-        for (Account account : accounts) {
-            if (account.getAccountName().equals(accountName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return getAccountsList().parallelStream().anyMatch(account -> account.getAccountName().equals(accountName));
     }
 
     public static void deleteAccount(String accountName) throws SQLException {
@@ -189,21 +176,13 @@ public abstract class Account {
         getAccountsList();
 
         List<Account> cbaccounts = new ArrayList<>();
-        int accountCount = 0;
 
-        for (Account account : accounts) {
-            if (account.getAccountName().toLowerCase().contains("cashbook")) {
-                cbaccounts.add(account);
-                accountCount++;
-            } else if (account.getAccountName().toLowerCase().contains("cash book")) {
-                cbaccounts.add(account);
-                accountCount++;
-            }
-        }
+        accounts.parallelStream().filter(account -> account.getAccountName().toLowerCase().contains("cashbook")
+                || account.getAccountName().toLowerCase().contains("cash book")).forEach(cbaccounts::add);
 
-        if (accountCount == 0) {
+        if (cbaccounts.size() == 0) {
             throw new SQLWarning("Cash book not found.");
-        } else if (accountCount > 1) {
+        } else if (cbaccounts.size() > 1) {
             throw new SQLWarning("Multiple cash books found. Cash book balance is the sum of all cash books.");
         }
 
@@ -245,21 +224,13 @@ public abstract class Account {
         getAccountsList();
 
         List<Account> bbaccounts = new ArrayList<>();
-        int accountCount = 0;
 
-        for (Account account : accounts) {
-            if (account.getAccountName().toLowerCase().contains("bankaccount")) {
-                bbaccounts.add(account);
-                accountCount++;
-            } else if (account.getAccountName().toLowerCase().contains("bank account")) {
-                bbaccounts.add(account);
-                accountCount++;
-            }
-        }
+        accounts.parallelStream().filter(account -> account.getAccountName().toLowerCase().contains("bankaccount")
+                || account.getAccountName().toLowerCase().contains("bank account")).forEach(bbaccounts::add);
 
-        if (accountCount > 1) {
+        if (bbaccounts.size() > 1) {
             throw new SQLWarning("Multiple bank accounts found. Bank balance is the sum of all bank accounts.");
-        } else if (accountCount == 0) {
+        } else if (bbaccounts.size() == 0) {
             throw new SQLWarning("Bank account not found.");
         }
 
