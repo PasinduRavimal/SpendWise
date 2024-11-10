@@ -17,7 +17,7 @@
          </font>
       </Label>
       <Text id="TextCashAccount" fx:id="TextCashAccount" layoutX="78.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cash Account" wrappingWidth="106.61090087890625" />
-      <Label fx:id="LabelSelectCredictAccount" layoutX="66.0" layoutY="113.0" prefHeight="20.0" prefWidth="222.0" text="Select the Crediting Account">
+      <Label fx:id="LabelSelectCreditAccount" layoutX="66.0" layoutY="113.0" prefHeight="20.0" prefWidth="222.0" text="Select the Crediting Account">
          <font>
             <Font size="14.0" />
          </font>
