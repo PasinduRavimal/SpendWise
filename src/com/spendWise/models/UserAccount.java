@@ -137,10 +137,12 @@ public abstract class UserAccount {
         UserAccountModel userAccountModel = UserAccountModel.getInstance();
         userAccountModel.updateUserAccount(displayName, userAccountModel.getPassword());
         userAccountModel.updateDatabase();
+        DashboardContentController.setUserLabel(displayName);
     }
     public static void deleteUser() throws SQLException, IOException {
         UserAccountModel userAccountModel = UserAccountModel.getInstance();
         userAccountModel.deleteUserAccount();
+        logout();
     }
     public static boolean validateCurrentPassword(String password) {
         UserAccountModel userAccountModel = UserAccountModel.getInstance();
