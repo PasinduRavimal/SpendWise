@@ -26,6 +26,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
@@ -38,6 +39,7 @@ public class AccountController implements Initializable {
 
     @FXML
     private Label AccountTitleLabel;
+    @FXML private Label accountBalanceLabel;
     @FXML
     private TextField SelectMonthTextField;
     @FXML
@@ -66,6 +68,20 @@ public class AccountController implements Initializable {
             AccountTitleLabel.setAlignment(Pos.CENTER);
             AccountTitleLabel.setTextAlignment(TextAlignment.CENTER);
         });
+
+        try {
+            double balance = account.getAccountBalance();
+            if (balance < 0) {
+                accountBalanceLabel.setStyle("-fx-text-fill: red;");
+                accountBalanceLabel.setText(String.valueOf(Math.abs(balance)) + " Credit");
+            } else {
+                accountBalanceLabel.setStyle("-fx-text-fill: green;");
+                accountBalanceLabel.setText(String.valueOf(balance) + " Debit");
+            }
+        } catch (SQLException e) {
+            Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
+        }
 
         debitColumn.setItems(debitTransactions);
         creditColumn.setItems(creditTransactions);
