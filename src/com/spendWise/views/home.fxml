@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.29797979797979796" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" prefHeight="400.0" prefWidth="800.0" scaleShape="false" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.spendWise.controllers.HomeController">
+  <items>
+      <Pane prefHeight="400.0" prefWidth="800.0">
+         <children>
+            <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="200.0" style="-fx-background-color:#A188C4">
+               <children>
+                  <TextField editable="false" focusTraversable="false" text="SpendWise">
+                     <font>
+                        <Font name="Arial Bold" size="18.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <cursor>
+                        <Cursor fx:constant="DEFAULT" />
+                     </cursor>
+                  </TextField>
+                  <TextField alignment="CENTER" editable="false" focusTraversable="false" text="Menu">
+                     <font>
+                        <Font name="Arial" size="15.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="DEFAULT" />
+                     </cursor>
+                  </TextField>
+                  <Accordion>
+                    <panes>
+                      <TitledPane fx:id="dashboardPane" animated="false" collapsible="false" expanded="false" text="Dashboard" />
+                        <TitledPane fx:id="accountsPane" animated="false" text="Accounts">
+                           <content>
+                              <AnchorPane maxHeight="-Infinity" maxWidth="180.0" minHeight="-Infinity" prefHeight="180.0" prefWidth="190.0">
+                                 </AnchorPane>
+                           </content>
+                        </TitledPane>
+                        <TitledPane fx:id="generalJournalPane" animated="false" collapsible="false" expanded="false" text="General Journal">
+                        </TitledPane>
+                      <TitledPane fx:id="settingsPane" animated="false" collapsible="false" expanded="false" text="Settings" />
+                        <TitledPane fx:id="helpPane" animated="false" collapsible="false" expanded="false" text="Help" />
+                    </panes>
+                  </Accordion>
+                  <BorderPane maxHeight="-Infinity" prefHeight="225.0" prefWidth="200.0">
+                     <bottom>
+                        <TitledPane fx:id="logoutPane" animated="false" collapsible="false" expanded="false" text="Logout" textAlignment="CENTER" BorderPane.alignment="CENTER" />
+                     </bottom>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </BorderPane>
+               </children>
+            </VBox>
+         </children>
+      </Pane>
+    <Pane fx:id="contentPane" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" />
+  </items>
+   <cursor>
+      <Cursor fx:constant="DEFAULT" />
+   </cursor>
+</SplitPane>

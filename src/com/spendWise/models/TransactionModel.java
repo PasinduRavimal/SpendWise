@@ -1,13 +1,11 @@
 package com.spendWise.models;
 
-import java.io.IOException;
 import java.sql.*;
 
-import org.mariadb.jdbc.export.ExceptionFactory.SqlExceptionFactory;
-
+import com.spendWise.controllers.DashboardContentController;
 import com.spendWise.util.DatabaseConnection;
 
-public class TransactionModel {
+public class TransactionModel extends Transaction {
     private int transactionID;
     private String username;
     private int debitingAccountID;
@@ -16,7 +14,8 @@ public class TransactionModel {
     private double amount;
     private String description;
 
-    public TransactionModel(String username, int debitingAccountID, int creditingAccountID, Timestamp transactionTime, double amount, String description){
+    public TransactionModel(String username, int debitingAccountID, int creditingAccountID, Timestamp transactionTime,
+            double amount, String description) {
         this.username = username;
         this.debitingAccountID = debitingAccountID;
         this.creditingAccountID = creditingAccountID;
@@ -24,8 +23,9 @@ public class TransactionModel {
         this.amount = amount;
         this.description = description;
     }
-    
-    public TransactionModel(int transactionID,String username, int debitingAccountID, int creditingAccountID, Timestamp transactionTime, double amount, String description){
+
+    public TransactionModel(int transactionID, String username, int debitingAccountID, int creditingAccountID,
+            Timestamp transactionTime, double amount, String description) {
         this.transactionID = transactionID;
         this.username = username;
         this.debitingAccountID = debitingAccountID;
@@ -84,27 +84,75 @@ public class TransactionModel {
     }
 
     public boolean isValidTransaction() {
-        return amount > 0; //TODO: Compare balances using AccountModel.getBalance()
+        return amount > 0;
     }
 
-
     public void saveTransaction() throws SQLException {
-        Statement stmt = DatabaseConnection.getStatement();
-        String query = "INSERT INTO transactions (username, debitingAccountID, creditingAccountID, transactionTime, amount, description) VALUES ('" + username + "', " + debitingAccountID + ", " + creditingAccountID + ", '" + transactionTime + "', " + amount + ", '" + description + "')";
-        stmt.executeUpdate(query);    
+        try {
+            String query = "INSERT INTO transactions (username, debitAccountID, creditAccountID, transactionTime, amount, description) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, username, debitingAccountID,
+                    creditingAccountID, transactionTime, amount, description);
+            ps.executeUpdate();
+            ps.close();
+
+            DashboardContentController.updateLastTransactions();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            for (Throwable t : e) {
+                if (t instanceof SQLNonTransientConnectionException) {
+                    throw new SQLException("Cannot connect to the database");
+                } else if (e.getErrorCode() == 1045) {
+                    throw new SQLException(
+                            "Please provide the correct database credentials in the databaseInfo.properties file.");
+                }
+            }
+            throw e;
+        }
     }
 
     public void deleteTransaction() throws SQLException {
-        Statement stmt = DatabaseConnection.getStatement();
-        String query = "DELETE FROM transactions WHERE transactionID = " + transactionID;
-        stmt.executeUpdate(query);
+        try {
+            String query = "DELETE FROM transactions WHERE transactionID = ?";
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, transactionID);
+            ps.executeUpdate();
+            ps.close();
+
+            DashboardContentController.updateLastTransactions();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            for (Throwable t : e) {
+                if (t instanceof SQLNonTransientConnectionException) {
+                    throw new SQLException("Cannot connect to the database");
+                } else if (e.getErrorCode() == 1045) {
+                    throw new SQLException(
+                            "Please provide the correct database credentials in the databaseInfo.properties file.");
+                }
+            }
+            throw e;
+        }
     }
 
     public void updateTransaction() throws SQLException {
-        Statement stmt = DatabaseConnection.getStatement();
-        String query = "UPDATE transactions SET debitingAccountID = " + debitingAccountID + ", creditingAccountID = " + creditingAccountID + ", transactionTime = '" + transactionTime + "', amount = " + amount + ", description = '" + description + "' WHERE transactionID = " + transactionID;
-        stmt.executeUpdate(query);
+        try {
+            String query = "UPDATE transactions SET debitAccountID = ?, creditAccountID = ?, transactionTime = ?, amount = ?, description = ? WHERE transactionID = ?";
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, debitingAccountID, creditingAccountID,
+                    transactionTime, amount, description, transactionID);
+            ps.executeUpdate();
+            ps.close();
+
+            DashboardContentController.updateLastTransactions();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            for (Throwable t : e) {
+                if (t instanceof SQLNonTransientConnectionException) {
+                    throw new SQLException("Cannot connect to the database");
+                } else if (e.getErrorCode() == 1045) {
+                    throw new SQLException(
+                            "Please provide the correct database credentials in the databaseInfo.properties file.");
+                }
+            }
+            throw e;
+        }
     }
 
-   
 }

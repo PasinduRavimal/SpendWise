@@ -10,28 +10,19 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane xmlns:fx="http://javafx.com/fxml" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" fx:controller="com.spendWise.controllers.SigninController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color:white" xmlns:fx="http://javafx.com/fxml" fx:controller="com.spendWise.controllers.SigninController">
    <children>
-      <Pane prefHeight="400.0" prefWidth="600.0">
+      <Pane layoutY="-1.0" prefHeight="406.0" prefWidth="600.0">
          <children>
-            <Pane prefHeight="400.0" prefWidth="600.0">
+            <Pane layoutY="3.0" prefHeight="400.0" prefWidth="600.0">
                <children>
-                  <TextField layoutX="256.0" layoutY="141.0" prefHeight="30.0" prefWidth="249.0" />
-                  <PasswordField layoutX="257.0" layoutY="209.0" prefHeight="30.0" prefWidth="249.0" />
-                  <Label layoutX="116.0" layoutY="143.0" text="Username">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="117.0" layoutY="211.0" text="Password">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
-                  <Button layoutX="199.0" layoutY="275.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="202.0" text="Sign in" />
-                  <Text layoutX="183.0" layoutY="344.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Don't have an account ?" />
-                  <Hyperlink layoutX="336.0" layoutY="325.0" text="Sign up here" />
+                  <Label layoutX="115.0" layoutY="120.0" text="Username" />
+                  <TextField fx:id="usernameField" layoutX="280.0" layoutY="120.0" prefHeight="30.0" prefWidth="230.0" style="-fx-background-color:#e2aef2"/>
+                  <Label layoutX="115.0" layoutY="186.0" text="Enter password" />
+                  <PasswordField fx:id="passwordField" layoutX="280.0" layoutY="186.0" prefHeight="30.0" prefWidth="230.0" style="-fx-background-color:#e2aef2"/>
+                  <Button fx:id="signinButton" layoutX="190.0" layoutY="270.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="218.0" style="-fx-background-color: #ff9900;-fx-text-fill: white;" text="Sign in" />
+                  <Hyperlink fx:id="signUpLink" layoutX="325.0" layoutY="320.0" text="Sign up here" />
+                  <Text layoutX="170.0" layoutY="339.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Don't have an account ?" />
                </children>
             </Pane>
          </children>
