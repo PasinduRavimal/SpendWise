@@ -83,12 +83,12 @@ public class TransactionModel extends Transaction {
     }
 
     public boolean isValidTransaction() {
-        return amount > 0; // TODO: Compare balances using AccountModel.getBalance()
+        return amount > 0;
     }
 
     public void saveTransaction() throws SQLException {
         try {
-            String query = "INSERT INTO transactions (username, debitingAccountID, creditingAccountID, transactionTime, amount, description) VALUES (?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO transactions (username, debitAccountID, creditAccountID, transactionTime, amount, description) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, username, debitingAccountID,
                     creditingAccountID, transactionTime, amount, description);
             ps.executeUpdate();
@@ -129,7 +129,7 @@ public class TransactionModel extends Transaction {
 
     public void updateTransaction() throws SQLException {
         try {
-            String query = "UPDATE transactions SET debitingAccountID = ?, creditingAccountID = ?, transactionTime = ?, amount = ?, description = ? WHERE transactionID = ?";
+            String query = "UPDATE transactions SET debitAccountID = ?, creditAccountID = ?, transactionTime = ?, amount = ?, description = ? WHERE transactionID = ?";
             PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, debitingAccountID, creditingAccountID,
                     transactionTime, amount, description, transactionID);
             ps.executeUpdate();

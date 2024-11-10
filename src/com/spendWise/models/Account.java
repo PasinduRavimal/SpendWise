@@ -315,6 +315,7 @@ public abstract class Account {
 
     @Override
     public int hashCode() {
-        return this.getAccountID();
+        return this.getAccountID() +
+        this.getAccountName().hashCode();
     }
 }

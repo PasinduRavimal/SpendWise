@@ -41,14 +41,21 @@ public abstract class Transaction {
     public abstract void updateTransaction() throws SQLException;
 
     public static List<Transaction> getLastTransactions(int n) throws SQLException, IOException {
+        if (UserAccount.getCurrentUser() == null) {
+            throw new IllegalStateException("No user logged in.");
+        }
         List<Transaction> transactions = new ArrayList<>();
         try {
             DatabaseConnection.getConnection();
-            ResultSet rs = DatabaseConnection.getStatement().executeQuery("SELECT * FROM transactions ORDER BY transactionID DESC LIMIT " + n);
+            String query = "SELECT * FROM transactions WHERE username = ? ORDER BY transactionID DESC LIMIT ?";
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, UserAccount.getCurrentUser().getUsername(), n);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Transaction transaction = new TransactionModel(rs.getInt("transactionID"), rs.getString("username"), rs.getInt("debitAccountID"), rs.getInt("creditAccountID"), rs.getTimestamp("transactionTime"), rs.getDouble("amount"), rs.getString("description"));
                 transactions.add(transaction);
             }
+            rs.close();
+            ps.close();
             return transactions;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -60,9 +67,42 @@ public abstract class Transaction {
             throw e;
         } catch (IOException e) {
             throw new IOException("Cannot access critical files.");
-        } finally {
-            DatabaseConnection.getStatement().close();
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj instanceof Transaction) {
+            Transaction trans = (Transaction) obj;
+            if (trans.getTransactionID() == this.getTransactionID()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getTransactionID() + 
+        this.getUsername().hashCode() +
+        this.getDebitingAccountID() +
+        this.getCreditingAccountID() +
+        this.getTransactionTime().hashCode() +
+        this.getDescription().hashCode();
+    }
+
+    public static Transaction getNewTransaction(String username, int debitingAccountID, int creditingAccountID, Timestamp transactionTime,
+    double amount, String description){
+        return new TransactionModel(username, debitingAccountID, creditingAccountID, transactionTime, amount, description);
     }
 
 }

@@ -18,6 +18,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 
+import com.spendWise.models.Account;
 import com.spendWise.models.Transaction;
 
 public class DashboardContentController implements Initializable {
@@ -103,8 +104,6 @@ public class DashboardContentController implements Initializable {
             }
         });
 
-        updateLastTransactions();
-
         cashBalanceLabel.textProperty().bind(cashBalance);
         bankBalanceLabel.textProperty().bind(bankBalance);
         userLabel.textProperty().bind(userLabelProperty);
@@ -131,6 +130,8 @@ public class DashboardContentController implements Initializable {
             lastTransaction1Property.setValue(transactions.get(0).getDescription() + " with amount: " + transactions.get(0).getAmount());
             lastTransaction2Property.setValue(transactions.get(1).getDescription() + " with amount: " + transactions.get(1).getAmount());
             lastTransaction3Property.setValue(transactions.get(2).getDescription() + " with amount: " + transactions.get(2).getAmount());
+            setBankBalance(Account.getBankBalance());
+            setCashBalance(Account.getCashBookBalance());
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {

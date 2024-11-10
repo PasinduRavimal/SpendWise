@@ -64,6 +64,7 @@ public abstract class UserAccount {
 
             Account.updateCurrentUser(account);
             DashboardContentController.setUserLabel(account.getDisplayName());
+            DashboardContentController.updateLastTransactions();
 
             return account;
 
@@ -122,7 +123,9 @@ public abstract class UserAccount {
 
     @Override
     public int hashCode() {
-        return this.getUsername().hashCode();
+        return this.getUsername().hashCode() +
+        this.getDisplayName().hashCode() +
+        this.getPassword().hashCode();
     }
 
     public static void changePassword(String confirmPassword) throws SQLException, IOException {

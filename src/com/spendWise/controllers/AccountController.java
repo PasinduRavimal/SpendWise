@@ -71,14 +71,14 @@ public class AccountController implements Initializable {
         creditColumn.setItems(creditTransactions);
 
         debitColumnDate.setCellValueFactory(
-                celldata -> new SimpleStringProperty(celldata.getValue().getTransactionTime().toString()));
+                celldata -> new SimpleStringProperty(celldata.getValue().getTransactionTime().toString().substring(0, 10)));
         debitColumnDescription
                 .setCellValueFactory(celldata -> new SimpleStringProperty(celldata.getValue().getDescription()));
         debitColumnAmount
                 .setCellValueFactory(celldata -> new SimpleDoubleProperty(celldata.getValue().getAmount()).asObject());
 
         creditColumnDate.setCellValueFactory(
-                celldata -> new SimpleStringProperty(celldata.getValue().getTransactionTime().toString()));
+                celldata -> new SimpleStringProperty(celldata.getValue().getTransactionTime().toString().substring(0, 10)));
         creditColumnDescription
                 .setCellValueFactory(celldata -> new SimpleStringProperty(celldata.getValue().getDescription()));
         creditColumnAmount
