@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import com.spendWise.controllers.DashboardContentController;
 import com.spendWise.util.DatabaseConnection;
 
 public class UserAccountModel extends UserAccount {
@@ -109,9 +110,11 @@ public class UserAccountModel extends UserAccount {
     synchronized void updateUserAccount(String newDisplayName, String newPassword) {
         displayName = newDisplayName;
         password = newPassword;
+
+        DashboardContentController.setUserLabel(newDisplayName);
     }
 
-    synchronized boolean deleteUserAccount() throws SQLException, IOException {
+    public synchronized boolean deleteUserAccount() throws SQLException, IOException {
         try {
             DatabaseConnection.getConnection();
             String query = "DELETE FROM Users WHERE username = ?";
@@ -122,6 +125,8 @@ public class UserAccountModel extends UserAccount {
             this.username = null;
             this.displayName = null;
             this.password = null;
+
+            logout();
 
             return true;
 
@@ -136,6 +141,20 @@ public class UserAccountModel extends UserAccount {
         }
 
         instance = null;
+    }
+
+    public void changePassword(String newPassword) throws SQLException, IOException {
+        updateUserAccount(displayName, newPassword);
+        updateDatabase();
+    }
+
+    public void changeDisplayName(String displayName) throws SQLException, IOException {
+        updateUserAccount(displayName, password);
+        updateDatabase();
+    }
+
+    public boolean validateCurrentPassword(String password) {
+        return getPassword().equals(password);
     }
 
 }

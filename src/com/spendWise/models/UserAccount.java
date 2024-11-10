@@ -14,7 +14,10 @@ public abstract class UserAccount {
     abstract boolean saveToDatabase() throws SQLException, IOException;
     abstract boolean updateDatabase() throws SQLException, IOException;
     abstract void updateUserAccount(String displayName, String password);
-    abstract boolean deleteUserAccount() throws SQLException, IOException;
+    public abstract boolean deleteUserAccount() throws SQLException, IOException;
+    public abstract void changePassword(String confirmPassword) throws SQLException, IOException;
+    public abstract void changeDisplayName(String displayName) throws SQLException, IOException;
+    public abstract boolean validateCurrentPassword(String password);
 
     public static boolean doUsersExist() throws SQLException, IOException {
         
@@ -128,25 +131,6 @@ public abstract class UserAccount {
         this.getPassword().hashCode();
     }
 
-    public static void changePassword(String confirmPassword) throws SQLException, IOException {
-        UserAccountModel userAccountModel = UserAccountModel.getInstance();
-        userAccountModel.updateUserAccount(userAccountModel.getDisplayName(), confirmPassword);
-        userAccountModel.updateDatabase();
-    }
-    public static void changeDisplayName(String displayName) throws SQLException, IOException {
-        UserAccountModel userAccountModel = UserAccountModel.getInstance();
-        userAccountModel.updateUserAccount(displayName, userAccountModel.getPassword());
-        userAccountModel.updateDatabase();
-        DashboardContentController.setUserLabel(displayName);
-    }
-    public static void deleteUser() throws SQLException, IOException {
-        UserAccountModel userAccountModel = UserAccountModel.getInstance();
-        userAccountModel.deleteUserAccount();
-        logout();
-    }
-    public static boolean validateCurrentPassword(String password) {
-        UserAccountModel userAccountModel = UserAccountModel.getInstance();
-        return userAccountModel.getPassword().equals(password);
-    }
+
 
 }
