@@ -122,7 +122,7 @@ public class UserAccountModel extends UserAccount {
             stmt.addBatch("DELETE FROM transactions WHERE username = '" + username + "'");
             stmt.addBatch("DELETE FROM generaljournal WHERE username = '" + username + "'");
             stmt.addBatch("DELETE FROM accounttypes WHERE accountOwner = '" + username + "'");
-            stmt.addBatch("DELETE FROM Users WHERE username = '" + username + "'");
+            stmt.addBatch("DELETE FROM users WHERE username = '" + username + "'");
             stmt.executeBatch();
             stmt.close();
 
