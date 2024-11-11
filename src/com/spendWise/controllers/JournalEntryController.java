@@ -1,14 +1,17 @@
 package com.spendWise.controllers;
 
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+
+import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 import com.spendWise.models.JournalEntry;
+import com.spendWise.models.JournalEntryModel;
 
 public class JournalEntryController  {
 
@@ -34,6 +37,7 @@ public class JournalEntryController  {
     private TableColumn<JournalEntry, Double> amountColumn;
 
     private final ObservableList<JournalEntry> journalEntries = FXCollections.observableArrayList();
+    
 
     @FXML
     public void initialize() {
@@ -46,17 +50,11 @@ public class JournalEntryController  {
     }
 
     @FXML
-    private void handleShowButtonClick() {
+    private void handleShowButtonClick() throws IOException {
         String month = monthTextField.getText().trim();
-        List<JournalEntry> entries = fetchJournalEntriesForMonth(month);
+        List<JournalEntry> entries = JournalEntryModel.fetchJournalEntriesForMonth(month);
         journalEntries.setAll(entries);
     }
 
-    private List<JournalEntry> fetchJournalEntriesForMonth(String month) {
-        return Arrays.asList(
-            new JournalEntry(1, LocalDate.of(2024, 1, 10), "A001", "Debit", 100.0),
-            new JournalEntry(2, LocalDate.of(2024, 1, 15), "A002", "Credit", 150.0),
-            new JournalEntry(3, LocalDate.of(2024, 1, 20), "A003", "Debit", 200.0)
-        );
-    }
+    
 }

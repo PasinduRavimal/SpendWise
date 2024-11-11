@@ -24,4 +24,6 @@ public class JournalEntry {
     public StringProperty accountIdProperty() { return accountId; }
     public StringProperty typeProperty() { return type; }
     public DoubleProperty amountProperty() { return amount; }
+
+    
 }
