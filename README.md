@@ -44,30 +44,4 @@ git pull origin main
 
 10. Click the green arrow button. If everything went well, you should get a welcome screen.
 
-## Before You Begin Coding After a Break
-
-1. Go to the project folder.
-
-2. Right click on the folder created and click "Open Git Bash here".
-
-3. Enter the following command.
-
-```
-git pull origin main
-```
-
-## While You Are Coding
-
-***Make sure no one other than you is altering the file you are coding. This is to ensure that no conflicts would happen when commiting your changes.***
-
-## After You Done Coding or Before Taking a Break
-
-1. Go to the project folder.
-
-2. Right click on the folder created and click "Open Git Bash here".
-
-3. Enter the following command.
-
-```
-git push -u origin main
-```
+*We didn't use package managers. So you would need to add JavaFX and MariaDB database drivers to the class path and set VM arguments if you choose not to use VS Code. Furthermore, since this is an application made for a university group assignment, we didn't take any step to secure data by encryption or any other means. We do not hold any responsibilty for losses incurred due to the use of this application. See the license agreement for more information.*

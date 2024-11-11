@@ -35,7 +35,11 @@ public class AccountSettingsController implements Initializable {
                 if (newAccount == null) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Account already exists.");
                     alert.showAndWait();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Account created successfully.");
+                    alert.showAndWait();
                 }
+                mainAccountNameTextField.clear();
             } catch (Exception e) {
                 e.printStackTrace();
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
@@ -45,7 +49,7 @@ public class AccountSettingsController implements Initializable {
 
         deleteAccountButton.setOnAction(event -> {
             try {
-                if (Account.doesAccountExist(mainAccountNameTextField.getText())) {
+                if (!Account.doesAccountExist(mainAccountNameTextField.getText())) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Account does not exist.");
                     alert.showAndWait();
                 } else if (Account.doesAccountHasTransactions(mainAccountNameTextField.getText())) {
@@ -53,6 +57,9 @@ public class AccountSettingsController implements Initializable {
                     alert.showAndWait();
                 } else {
                     Account.deleteAccount(mainAccountNameTextField.getText());
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Account deleted successfully.");
+                    alert.showAndWait();
+                    mainAccountNameTextField.clear();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -76,12 +83,16 @@ public class AccountSettingsController implements Initializable {
                             "Cannot rename because an account with the same name already exists.");
                     alert.showAndWait();
                     return;
-                } else if (Account.doesAccountExist(oldAccountNameTextField.getText())) {
+                } else if (!Account.doesAccountExist(oldAccountNameTextField.getText())) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Account does not exist.");
                     alert.showAndWait();
                     return;
                 } else {
                     Account.renameAccount(oldAccountNameTextField.getText(), newAccountNameTextField.getText());
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Account renamed successfully.");
+                    alert.showAndWait();
+                    oldAccountNameTextField.clear();
+                    newAccountNameTextField.clear();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

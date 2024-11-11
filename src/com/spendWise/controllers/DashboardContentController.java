@@ -5,6 +5,7 @@ import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
@@ -16,6 +17,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.util.*;
 
 import com.spendWise.models.Account;
@@ -113,7 +115,6 @@ public class DashboardContentController implements Initializable {
                 lastTransaction1Property.setValue("No transactions yet");
                 lastTransaction2Property.setValue("No transactions yet");
                 lastTransaction3Property.setValue("No transactions yet");
-                return;
             } else if (transactions.size() == 1){
                 lastTransaction1Property.setValue(transactions.get(0).getDescription() + " with amount: " + transactions.get(0).getAmount());
                 lastTransaction2Property.setValue("No transactions yet");
@@ -129,6 +130,10 @@ public class DashboardContentController implements Initializable {
             }
             setBankBalance(Account.getBankBalance());
             setCashBalance(Account.getCashBookBalance());
+        } catch (SQLWarning e){
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {

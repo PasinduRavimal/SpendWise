@@ -35,10 +35,6 @@ public abstract class Account {
             return accounts;
         }
 
-        if (!accounts.isEmpty() && currentUser.equals(UserAccount.getCurrentUser())) {
-            return accounts;
-        }
-
         accounts.clear();
 
         try {
@@ -180,9 +176,7 @@ public abstract class Account {
         accounts.parallelStream().filter(account -> account.getAccountName().toLowerCase().contains("cashbook")
                 || account.getAccountName().toLowerCase().contains("cash book")).forEach(cbaccounts::add);
 
-        if (cbaccounts.size() == 0) {
-            throw new SQLWarning("Cash book not found.");
-        } else if (cbaccounts.size() > 1) {
+        if (cbaccounts.size() > 1) {
             throw new SQLWarning("Multiple cash books found. Cash book balance is the sum of all cash books.");
         }
 
@@ -230,10 +224,8 @@ public abstract class Account {
 
         if (bbaccounts.size() > 1) {
             throw new SQLWarning("Multiple bank accounts found. Bank balance is the sum of all bank accounts.");
-        } else if (bbaccounts.size() == 0) {
-            throw new SQLWarning("Bank account not found.");
         }
-
+        
         double balance = 0;
 
         for (Account account : bbaccounts) {

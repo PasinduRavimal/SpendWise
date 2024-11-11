@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #eeccff;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.spendWise.controllers.JournalEntryController">
-    <VBox spacing="10" alignment="TOP_CENTER" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="39.0" AnchorPane.rightAnchor="39.0">
-        <Label text="General Journal Entry" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    <VBox alignment="TOP_CENTER" spacing="10" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="39.0" AnchorPane.rightAnchor="39.0" AnchorPane.topAnchor="0.0">
+        <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="General Journal Entry" />
         
-        <HBox spacing="5" alignment="CENTER">
+        <HBox alignment="CENTER" spacing="5">
             <Label text="Month:" />
-            <TextField fx:id="monthTextField" promptText="Enter month" style="-fx-background-color: #e2aef2;" />
-            <Button text="Show" onAction="#handleShowButtonClick" style="-fx-background-color: #ff9900; -fx-text-fill: white;" />
+            <TextField fx:id="monthTextField" promptText="YYYY-MM" style="-fx-background-color: #e2aef2;" />
+            <Button onAction="#handleShowButtonClick" style="-fx-background-color: #ff9900; -fx-text-fill: white;" text="Show" />
         </HBox>
         
         <TableView fx:id="journalTable" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="transactionIdColumn" text="Transaction ID" prefWidth="120" />
-                <TableColumn fx:id="dateColumn" text="Date" prefWidth="90" />
-                <TableColumn fx:id="accountIdColumn" text="Account ID" prefWidth="120" />
-                <TableColumn fx:id="typeColumn" text="IsCredit" prefWidth="90" />
-                <TableColumn fx:id="amountColumn" text="Amount" prefWidth="100" />
+                <TableColumn fx:id="dateColumn" prefWidth="75.0" text="Date" />
+                <TableColumn fx:id="debitColumn" prefWidth="75.0" text="Debit" />
+                <TableColumn fx:id="creditColumn" prefWidth="75.0" text="Credit" />
+                <TableColumn fx:id="descriptionColumn" prefWidth="218.0" text="Description" />
+                <TableColumn fx:id="amountColumn" prefWidth="75.0" text="Amount" />
             </columns>
         </TableView>
     </VBox>

@@ -43,6 +43,9 @@ public abstract class UserAccount {
 
             Account.updateCurrentUser(user);
 
+            Account.createAccount("Cash Book");
+            Account.createAccount("Bank Account");
+
             return true;
         } catch (SQLException e){
             for (Throwable t : e) {

@@ -1,5 +1,6 @@
 package com.spendWise.models;
 
+import java.sql.Statement;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -117,16 +118,17 @@ public class UserAccountModel extends UserAccount {
     public synchronized boolean deleteUserAccount() throws SQLException, IOException {
         try {
             DatabaseConnection.getConnection();
-            String query = "DELETE FROM Users WHERE username = ?";
-            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, username);
-            ps.executeUpdate();
-            ps.close();
+            Statement stmt = DatabaseConnection.getStatement();
+            stmt.addBatch("DELETE FROM transactions WHERE username = '" + username + "'");
+            stmt.addBatch("DELETE FROM generaljournal WHERE username = '" + username + "'");
+            stmt.addBatch("DELETE FROM accounttypes WHERE accountOwner = '" + username + "'");
+            stmt.addBatch("DELETE FROM users WHERE username = '" + username + "'");
+            stmt.executeBatch();
+            stmt.close();
 
             this.username = null;
             this.displayName = null;
             this.password = null;
-
-            logout();
 
             return true;
 

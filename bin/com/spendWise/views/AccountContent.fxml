@@ -17,17 +17,7 @@
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <Label fx:id="MakeExpensesLabel" layoutX="24.0" layoutY="300.0" text="Expenses To Make :">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="AlreadyMadeExpensesLabel" layoutX="24.0" layoutY="328.0" text="Expenses Already Made :">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="TotalExpensesLabel" layoutX="24.0" layoutY="357.0" text="Total Expenses :">
+      <Label fx:id="AlreadyMadeExpensesLabel" layoutX="24.0" layoutY="328.0" text="Account Balance: ">
          <font>
             <Font size="14.0" />
          </font>
@@ -64,5 +54,10 @@
             </HBox>
          </top>
       </BorderPane>
+      <Label fx:id="accountBalanceLabel" layoutX="134.0" layoutY="328.0" prefWidth="200.0" textAlignment="RIGHT">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
