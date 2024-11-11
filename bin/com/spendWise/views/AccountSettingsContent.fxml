@@ -59,7 +59,7 @@
             <Label text="Old Account Name" />
             <TextField fx:id="oldAccountNameTextField" prefHeight="25.6" prefWidth="171.2" GridPane.columnIndex="1" style="-fx-background-color:#e2aef2"/>
             <Label text="New Account Name" GridPane.rowIndex="1" />
-            <TextField fx:id="newAccountNameTextField" prefHeight="25.6" prefWidth="171.2" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-background-color:#e2aef2"/>
+            <TextField fx:id="newAccountNameField" prefHeight="25.6" prefWidth="171.2" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-background-color:#e2aef2"/>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
                <center>
                   <Button fx:id="renameAccountButton" mnemonicParsing="false" text="Rename Account" BorderPane.alignment="CENTER" style="-fx-background-color: #ff9900;-fx-text-fill: white;"/>
