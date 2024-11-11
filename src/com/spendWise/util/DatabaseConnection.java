@@ -198,7 +198,7 @@ public class DatabaseConnection {
                     ps.setDouble(i, (double) value);
                 } else if (value instanceof Timestamp) {
                     ps.setTimestamp(i, (Timestamp) value);
-                } else if (value instanceof Date){
+                } else if (value instanceof Date) {
                     ps.setDate(i, (Date) value);
                 } else {
                     throw new UnsupportedOperationException("Type not implemented");
@@ -233,13 +233,8 @@ public class DatabaseConnection {
             statement.addBatch(
                     "CREATE TABLE `transactions` (`transactionID` INT NOT NULL AUTO_INCREMENT , `username` VARCHAR(50) NOT NULL , `debitAccountID` INT NOT NULL , `creditAccountID` INT NOT NULL , `transactionTime` DATETIME NOT NULL , `amount` DOUBLE NOT NULL , `description` VARCHAR(255) , PRIMARY KEY (`transactionID`)) ENGINE = InnoDB; ");
 
-            statement.addBatch("CREATE TABLE generaljournal (" +
-                    "  transaction_id int(11) NOT NULL," +
-                    "  date date NOT NULL," +
-                    "  account_id int(11) NOT NULL," +
-                    "  is_credit tinyint(1) NOT NULL," +
-                    "  amount int(11) NOT NULL" +
-                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;");
+            statement.addBatch(
+                    "CREATE TABLE `generaljournal` (`journalEntryID` INT NOT NULL AUTO_INCREMENT , `username` VARCHAR(50) NOT NULL , `debitAccountID` INT NOT NULL , `creditAccountID` INT NOT NULL , `journalEntryTime` DATETIME NOT NULL , `amount` DOUBLE NOT NULL , `description` VARCHAR(255) , PRIMARY KEY (`journalEntryID`)) ENGINE = InnoDB; ");
 
             statement.addBatch("ALTER TABLE `transactions` ADD INDEX(`debitAccountID`, `creditAccountID`);");
 
@@ -253,18 +248,31 @@ public class DatabaseConnection {
                     "ALTER TABLE `transactions` ADD CONSTRAINT `FK_debitAccountID_account` FOREIGN KEY (`debitAccountID`) REFERENCES `accounttypes`(`accountID`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
 
             statement.addBatch(
+                    "ALTER TABLE `generaljournal` ADD CONSTRAINT `FK_usernamegeneraljournal_user` FOREIGN KEY (`username`) REFERENCES `users`(`username`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
+
+            statement.addBatch(
+                    "ALTER TABLE `generaljournal` ADD CONSTRAINT `FK_creditAccountIDgeneraljournal_account` FOREIGN KEY (`creditAccountID`) REFERENCES `accounttypes`(`accountID`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
+
+            statement.addBatch(
+                    "ALTER TABLE `generaljournal` ADD CONSTRAINT `FK_debitAccountIDgeneraljournal_account` FOREIGN KEY (`debitAccountID`) REFERENCES `accounttypes`(`accountID`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
+
+            statement.addBatch(
                     "ALTER TABLE `accounttypes` ADD CONSTRAINT `FK_usernameaccounttype_user` FOREIGN KEY (`accountOwner`) REFERENCES `users`(`username`) ON DELETE RESTRICT ON UPDATE RESTRICT;");
 
             statement.addBatch(
                     "ALTER TABLE accounttypes ADD CONSTRAINT accounttypes_unique UNIQUE KEY (accountName, accountOwner);");
 
-            statement.addBatch("create view transactionssummary as SELECT COALESCE(debit.accountID, credit.accountID) AS accountID, COALESCE(debit.debitSum, 0) AS debitSum, COALESCE(credit.creditSum, 0) AS creditSum, COALESCE(debit.transactionMonth, credit.transactionMonth) AS transactionMonth FROM (SELECT SUM(amount) AS debitSum, debitAccountID AS accountID, DATE_FORMAT(transactiontime, '%Y-%m-01') AS transactionMonth FROM transactions GROUP BY debitAccountID, transactionMonth) AS debit LEFT JOIN (SELECT SUM(amount) AS creditSum, creditAccountID AS accountID, DATE_FORMAT(transactiontime, '%Y-%m-01') AS transactionMonth FROM transactions GROUP BY creditAccountID, transactionMonth) AS credit ON debit.accountID = credit.accountID AND debit.transactionMonth = credit.transactionMonth UNION SELECT COALESCE(debit.accountID, credit.accountID) AS accountID, COALESCE(debit.debitSum, 0) AS debitSum, COALESCE(credit.creditSum, 0) AS creditSum, COALESCE(debit.transactionMonth, credit.transactionMonth) AS transactionMonth FROM (SELECT SUM(amount) AS debitSum, debitAccountID AS accountID, DATE_FORMAT(transactiontime, '%Y-%m-01') AS transactionMonth FROM transactions GROUP BY debitAccountID, transactionMonth) AS debit RIGHT JOIN (SELECT SUM(amount) AS creditSum, creditAccountID AS accountID, DATE_FORMAT(transactiontime, '%Y-%m-01') AS transactionMonth  FROM transactions GROUP BY creditAccountID, transactionMonth) AS credit ON debit.accountID = credit.accountID AND debit.transactionMonth = credit.transactionMonth;");
+            statement.addBatch(
+                    "create view transactionssummary as SELECT COALESCE(debit.accountID, credit.accountID) AS accountID, COALESCE(debit.debitSum, 0) AS debitSum, COALESCE(credit.creditSum, 0) AS creditSum, COALESCE(debit.transactionMonth, credit.transactionMonth) AS transactionMonth FROM (SELECT SUM(amount) AS debitSum, debitAccountID AS accountID, DATE_FORMAT(transactiontime, '%Y-%m-01') AS transactionMonth FROM transactions GROUP BY debitAccountID, transactionMonth) AS debit LEFT JOIN (SELECT SUM(amount) AS creditSum, creditAccountID AS accountID, DATE_FORMAT(transactiontime, '%Y-%m-01') AS transactionMonth FROM transactions GROUP BY creditAccountID, transactionMonth) AS credit ON debit.accountID = credit.accountID AND debit.transactionMonth = credit.transactionMonth UNION SELECT COALESCE(debit.accountID, credit.accountID) AS accountID, COALESCE(debit.debitSum, 0) AS debitSum, COALESCE(credit.creditSum, 0) AS creditSum, COALESCE(debit.transactionMonth, credit.transactionMonth) AS transactionMonth FROM (SELECT SUM(amount) AS debitSum, debitAccountID AS accountID, DATE_FORMAT(transactiontime, '%Y-%m-01') AS transactionMonth FROM transactions GROUP BY debitAccountID, transactionMonth) AS debit RIGHT JOIN (SELECT SUM(amount) AS creditSum, creditAccountID AS accountID, DATE_FORMAT(transactiontime, '%Y-%m-01') AS transactionMonth  FROM transactions GROUP BY creditAccountID, transactionMonth) AS credit ON debit.accountID = credit.accountID AND debit.transactionMonth = credit.transactionMonth;");
 
-            statement.addBatch("create view cumulativeSummary as SELECT accountID, transactionMonth, debitSum, creditSum, SUM(debitSum) OVER (PARTITION BY accountID ORDER BY transactionMonth) AS cumulativeDebitSum, SUM(creditSum) OVER (PARTITION BY accountID ORDER BY transactionMonth) AS cumulativeCreditSum FROM transactionssummary ORDER BY accountID, transactionMonth;");
+            statement.addBatch(
+                    "create view cumulativeSummary as SELECT accountID, transactionMonth, debitSum, creditSum, SUM(debitSum) OVER (PARTITION BY accountID ORDER BY transactionMonth) AS cumulativeDebitSum, SUM(creditSum) OVER (PARTITION BY accountID ORDER BY transactionMonth) AS cumulativeCreditSum FROM transactionssummary ORDER BY accountID, transactionMonth;");
 
-            statement.addBatch("create view forwardedbalances as SELECT accountID, transactionMonth, debitSum, creditSum, cumulativeDebitSum, cumulativeCreditSum FROM cumulativesummary c WHERE transactionMonth < DATE_FORMAT(curdate(), '%Y-%m-01') AND (accountID, transactionMonth) IN (SELECT accountID, MAX(transactionMonth) FROM cumulativesummary WHERE transactionMonth < DATE_FORMAT(curdate(), '%Y-%m-01') GROUP BY accountID) ORDER BY accountID;");
+            statement.addBatch(
+                    "create view forwardedbalances as SELECT accountID, transactionMonth, debitSum, creditSum, cumulativeDebitSum, cumulativeCreditSum FROM cumulativesummary c WHERE transactionMonth < DATE_FORMAT(curdate(), '%Y-%m-01') AND (accountID, transactionMonth) IN (SELECT accountID, MAX(transactionMonth) FROM cumulativesummary WHERE transactionMonth < DATE_FORMAT(curdate(), '%Y-%m-01') GROUP BY accountID) ORDER BY accountID;");
 
-            statement.addBatch("create view currentbalances as SELECT accountID, transactionMonth, debitSum, creditSum, cumulativeDebitSum, cumulativeCreditSum FROM cumulativesummary c WHERE transactionMonth = DATE_FORMAT(curdate(), '%Y-%m-01') AND (accountID, transactionMonth) IN (SELECT accountID, MAX(transactionMonth) FROM cumulativesummary WHERE transactionMonth = DATE_FORMAT(curdate(), '%Y-%m-01') GROUP BY accountID) ORDER BY accountID;");
+            statement.addBatch(
+                    "create view currentbalances as SELECT accountID, transactionMonth, debitSum, creditSum, cumulativeDebitSum, cumulativeCreditSum FROM cumulativesummary c WHERE transactionMonth = DATE_FORMAT(curdate(), '%Y-%m-01') AND (accountID, transactionMonth) IN (SELECT accountID, MAX(transactionMonth) FROM cumulativesummary WHERE transactionMonth = DATE_FORMAT(curdate(), '%Y-%m-01') GROUP BY accountID) ORDER BY accountID;");
             statement.executeBatch();
 
         } catch (SQLException e) {
