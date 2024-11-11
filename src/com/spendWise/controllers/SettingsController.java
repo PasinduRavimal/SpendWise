@@ -31,9 +31,9 @@ public class SettingsController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         confirmButton.setOnAction(event -> {
             String password = currentPasswordField.getText();
-            String confirmPassword = newPasswordField.getText();
+            String newPassword = newPasswordField.getText();
             
-            if (password.isEmpty() || confirmPassword.isEmpty()) {
+            if (password.isEmpty() || newPassword.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Empty Fields");
@@ -41,15 +41,15 @@ public class SettingsController implements Initializable {
                 alert.showAndWait();
             }else{
                 try {
-                    if (!UserAccount.validateCurrentPassword(password)) {
+                    if (!UserAccount.getCurrentUser().validateCurrentPassword(password)) {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
                         alert.setHeaderText("Invalid Current Password");
                         alert.setContentText("The current password you entered is incorrect.");
                         alert.showAndWait();
-                        
+                        return;
                     }
-                    UserAccount.changePassword(confirmPassword);
+                    UserAccount.getCurrentUser().changePassword(newPassword);
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Success");
                     alert.setHeaderText("Password Changed");
@@ -84,7 +84,7 @@ public class SettingsController implements Initializable {
             alert.showAndWait();
         }else{
             try {
-                   UserAccount.changeDisplayName(displayName);
+                   UserAccount.getCurrentUser().changeDisplayName(displayName);
                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
                    alert.setTitle("Success");
                    alert.setHeaderText("Display name Changed");
@@ -113,7 +113,7 @@ public class SettingsController implements Initializable {
             alert.showAndWait();
         }else{
             try {
-            UserAccount.deleteUser();
+            UserAccount.getCurrentUser().deleteUserAccount();
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Success");
             alert.setHeaderText("Account Deleted");

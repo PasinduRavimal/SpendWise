@@ -66,7 +66,6 @@ public class DashboardContentController implements Initializable {
                 currentStage.setScene(addTransactionScene);
                 currentStage.setTitle("Add Transaction");
                 currentStage.showAndWait();
-                updateLastTransactions();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -82,7 +81,6 @@ public class DashboardContentController implements Initializable {
                 currentStage.initModality(Modality.APPLICATION_MODAL);
                 currentStage.setTitle("Edit Transaction");
                 currentStage.showAndWait();
-                updateLastTransactions();
             } catch (IOException e) {
                 e.printStackTrace();
             }
