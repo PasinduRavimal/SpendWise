@@ -77,8 +77,8 @@ public class EditTransactionController implements Initializable {
                 SelectTransactionController selectTransactionController = new SelectTransactionController();
                 loader.setController(selectTransactionController);
                 Parent selectTransactionRoot = loader.load();
-                selectTransactionController.setDetails(creditAccountComboBox.getValue(),
-                        debitAccountComboBox.getValue(),
+                selectTransactionController.setDetails(debitAccountComboBox.getValue(),
+                        creditAccountComboBox.getValue(),
                         Timestamp.valueOf(DatePickerSelectTransactionDate.getValue().toString() + " 00:00:00"));
 
                 Scene selectTransactionScene = new Scene(selectTransactionRoot);

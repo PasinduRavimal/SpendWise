@@ -59,7 +59,7 @@ public class EditTransactionFinalStageController {
                     .append(",").append(Account.getAccountByID(transaction.getDebitingAccountID()).getAccountName())
                     .append(",")
                     .append(transaction.getAmount()).append(",").append(transaction.getTransactionTime()).append(",")
-                    .append(transaction.getDescription()).append("}").append("changed to ");
+                    .append(transaction.getDescription()).append("}").append(" changed to ");
 
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Error loading accounts");

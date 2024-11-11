@@ -21,11 +21,13 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import com.spendWise.models.Account;
+import com.spendWise.models.JournalEntryModel;
 import com.spendWise.models.Transaction;
 
 public class SelectTransactionController implements Initializable {
 
     private ObservableList<Transaction> transactions;
+    private StringBuilder journalEntryDesc = new StringBuilder();
 
     @FXML private TableView<Transaction> TableViewSelectTransactions;
     @FXML private TableColumn<Transaction, String> descriptionColumn;
@@ -78,9 +80,25 @@ public class SelectTransactionController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this transaction?");
             if (alert.showAndWait().get() == ButtonType.OK) {
                 try {
+                    Transaction transaction = selectedTransaction;
                     selectedTransaction.deleteTransaction();
                     transactions.remove(selectedTransaction);
+                    journalEntryDesc.append("{")
+                    .append(Account.getAccountByID(transaction.getCreditingAccountID()).getAccountName())
+                    .append(",").append(Account.getAccountByID(transaction.getDebitingAccountID()).getAccountName())
+                    .append(",")
+                    .append(transaction.getAmount()).append(",").append(transaction.getTransactionTime()).append(",")
+                    .append(transaction.getDescription()).append("}").append(" deleted.");
+                    JournalEntryModel journalEntry = new JournalEntryModel(transaction.getTransactionID(),
+                            transaction.getTransactionTime(), transaction.getDebitingAccountID(),
+                            transaction.getCreditingAccountID(), journalEntryDesc.toString(), transaction.getAmount());
+                    journalEntry.saveToDatabase();
+                    selectedTransaction = null;
                 } catch (SQLException e) {
+                    e.printStackTrace();
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Error deleting transaction");
+                    errorAlert.showAndWait();
+                } catch (IOException e) {
                     e.printStackTrace();
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Error deleting transaction");
                     errorAlert.showAndWait();
