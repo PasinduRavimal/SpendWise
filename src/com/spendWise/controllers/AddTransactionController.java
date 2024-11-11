@@ -37,10 +37,10 @@ public class AddTransactionController {
     public void initialize() {
 
         try {
-            creditAccountComboBox.getItems().addAll(Account.getAccountsList());
+            creditAccountComboBox.getItems().setAll(Account.getAccountsList());
             creditAccountComboBox.setConverter(new StringAccountConverter());
 
-            debitAccountComboBox.getItems().addAll(Account.getAccountsList());
+            debitAccountComboBox.getItems().setAll(Account.getAccountsList());
             debitAccountComboBox.setConverter(new StringAccountConverter());
 
         } catch (SQLException e) {

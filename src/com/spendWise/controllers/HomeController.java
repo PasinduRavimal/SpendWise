@@ -88,10 +88,14 @@ public class HomeController implements Initializable {
                 vbox.setPrefWidth(200);
                 List<Account> accounts = Account.getAccountsList();
                 if (accounts.isEmpty()) {
+                    accountsPane.setExpanded(false);
                     accountsPane.setCollapsible(false);
+                    vbox.getChildren().clear();
+                    anchorPane.getChildren().clear();
                     return;
                 }
                 accountsPane.setCollapsible(true);
+                vbox.getChildren().clear();
                 anchorPane.getChildren().clear();
                 for (Account account : accounts) {
                     TitledPane titledPane = new TitledPane(account.getAccountName(), null);

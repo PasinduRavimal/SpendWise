@@ -275,6 +275,8 @@ public class DatabaseConnection {
                     "create view currentbalances as SELECT accountID, transactionMonth, debitSum, creditSum, cumulativeDebitSum, cumulativeCreditSum FROM cumulativesummary c WHERE transactionMonth = DATE_FORMAT(curdate(), '%Y-%m-01') AND (accountID, transactionMonth) IN (SELECT accountID, MAX(transactionMonth) FROM cumulativesummary WHERE transactionMonth = DATE_FORMAT(curdate(), '%Y-%m-01') GROUP BY accountID) ORDER BY accountID;");
             statement.executeBatch();
 
+            statement.closeOnCompletion();
+
         } catch (SQLException e) {
             for (Throwable t : e) {
                 if (t instanceof SQLNonTransientConnectionException) {
