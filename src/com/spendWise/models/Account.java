@@ -35,10 +35,6 @@ public abstract class Account {
             return accounts;
         }
 
-        if (!accounts.isEmpty() && currentUser.equals(UserAccount.getCurrentUser())) {
-            return accounts;
-        }
-
         accounts.clear();
 
         try {
