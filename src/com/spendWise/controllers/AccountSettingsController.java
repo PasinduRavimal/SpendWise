@@ -49,7 +49,7 @@ public class AccountSettingsController implements Initializable {
 
         deleteAccountButton.setOnAction(event -> {
             try {
-                if (Account.doesAccountExist(mainAccountNameTextField.getText())) {
+                if (!Account.doesAccountExist(mainAccountNameTextField.getText())) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Account does not exist.");
                     alert.showAndWait();
                 } else if (Account.doesAccountHasTransactions(mainAccountNameTextField.getText())) {
@@ -83,7 +83,7 @@ public class AccountSettingsController implements Initializable {
                             "Cannot rename because an account with the same name already exists.");
                     alert.showAndWait();
                     return;
-                } else if (Account.doesAccountExist(oldAccountNameTextField.getText())) {
+                } else if (!Account.doesAccountExist(oldAccountNameTextField.getText())) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Account does not exist.");
                     alert.showAndWait();
                     return;
