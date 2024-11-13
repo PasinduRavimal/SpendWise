@@ -32,7 +32,9 @@ public class UserAccountModel extends UserAccount {
             throw new IllegalArgumentException("User already exists.");
         }
 
-        instance = new UserAccountModel(username, displayName, password);
+        UserAccountModel userAccount = new UserAccountModel(username, displayName, password);
+        userAccount.saveToDatabase();
+        instance = userAccount;
         return instance;
     }
 

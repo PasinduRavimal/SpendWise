@@ -25,6 +25,7 @@ public class AccountModel extends Account {
     protected AccountModel(String accountName) throws SQLException {
         this.accountName = accountName;
         addToDatabase();
+        this.accountID = getAccountIDByName(accountName);
     }
 
     public int getAccountID() {
@@ -35,14 +36,13 @@ public class AccountModel extends Account {
         return accountName;
     }
 
-    public void setAccountName(String accountName) throws SQLException {
-        this.accountName = accountName;
-
+    void setAccountName(String accountName) throws SQLException {
         try {
             String query = "UPDATE accounttypes SET accountName = ? WHERE accountID = ?";
             PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, accountName, accountID);
             ps.executeUpdate();
             ps.close();
+            this.accountName = accountName;
         } catch (SQLException e) {
             for (Throwable t : e) {
                 if (t instanceof SQLNonTransientConnectionException) {
@@ -54,7 +54,7 @@ public class AccountModel extends Account {
         }
     }
 
-    public void deleteAccount() throws SQLException {
+    void deleteAccount() throws SQLException {
         try {
             String query = "DELETE FROM accounttypes WHERE accountID = ?";
             PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, accountID);
@@ -63,6 +63,34 @@ public class AccountModel extends Account {
             this.accountName = null;
             this.accountID = -1;
         } catch (SQLException e) {
+            for (Throwable t : e) {
+                if (t instanceof SQLNonTransientConnectionException) {
+                    throw new SQLException("Database connection error.");
+                }
+            }
+
+            throw e;
+        }
+    }
+
+    private int getAccountIDByName(String name) throws SQLException{
+        try {
+            String query = "SELECT accountID FROM accounttypes WHERE accountName = ? AND accountOwner = ?";
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, accountName,
+                    UserAccount.getCurrentUser().getUsername());
+            ResultSet rs = ps.executeQuery();
+            int accountID = -1;
+            if (rs.next()) {
+                 accountID = rs.getInt("accountID");
+            }
+
+            rs.close();
+            ps.close();
+
+            return accountID;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
             for (Throwable t : e) {
                 if (t instanceof SQLNonTransientConnectionException) {
                     throw new SQLException("Database connection error.");

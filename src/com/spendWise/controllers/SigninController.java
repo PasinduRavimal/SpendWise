@@ -43,6 +43,10 @@ public class SigninController implements Initializable {
                         ScreenController.getStage().setTitle("SpendWise");
                         ScreenController.centerStage();
 
+                        HomeController.getInstance().addAccounts();
+                        DashboardContentController.setUserLabel(userAccount.getDisplayName());
+                        DashboardContentController.updateLastTransactions();
+
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR, "Username or password is incorrect.");
                         alert.showAndWait();

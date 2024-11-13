@@ -221,6 +221,8 @@ public class DatabaseConnection {
 
             statement.addBatch("DROP TABLE IF EXISTS `transactions`, `users`, `accounttypes`;");
 
+            statement.addBatch("DROP VIEW IF EXISTS `currentbalances`, `forwardedbalances`, `cumulativesummary`, `transactionssummary`;");
+
             statement.addBatch("CREATE TABLE `users` (" +
                     "  `username` VARCHAR(30) NOT NULL," +
                     "  `displayname` VARCHAR(50) NOT NULL," +
@@ -266,7 +268,7 @@ public class DatabaseConnection {
                     "create view transactionssummary as SELECT COALESCE(debit.accountID, credit.accountID) AS accountID, COALESCE(debit.debitSum, 0) AS debitSum, COALESCE(credit.creditSum, 0) AS creditSum, COALESCE(debit.transactionMonth, credit.transactionMonth) AS transactionMonth FROM (SELECT SUM(amount) AS debitSum, debitAccountID AS accountID, DATE_FORMAT(transactiontime, '%Y-%m-01') AS transactionMonth FROM transactions GROUP BY debitAccountID, transactionMonth) AS debit LEFT JOIN (SELECT SUM(amount) AS creditSum, creditAccountID AS accountID, DATE_FORMAT(transactiontime, '%Y-%m-01') AS transactionMonth FROM transactions GROUP BY creditAccountID, transactionMonth) AS credit ON debit.accountID = credit.accountID AND debit.transactionMonth = credit.transactionMonth UNION SELECT COALESCE(debit.accountID, credit.accountID) AS accountID, COALESCE(debit.debitSum, 0) AS debitSum, COALESCE(credit.creditSum, 0) AS creditSum, COALESCE(debit.transactionMonth, credit.transactionMonth) AS transactionMonth FROM (SELECT SUM(amount) AS debitSum, debitAccountID AS accountID, DATE_FORMAT(transactiontime, '%Y-%m-01') AS transactionMonth FROM transactions GROUP BY debitAccountID, transactionMonth) AS debit RIGHT JOIN (SELECT SUM(amount) AS creditSum, creditAccountID AS accountID, DATE_FORMAT(transactiontime, '%Y-%m-01') AS transactionMonth  FROM transactions GROUP BY creditAccountID, transactionMonth) AS credit ON debit.accountID = credit.accountID AND debit.transactionMonth = credit.transactionMonth;");
 
             statement.addBatch(
-                    "create view cumulativeSummary as SELECT accountID, transactionMonth, debitSum, creditSum, SUM(debitSum) OVER (PARTITION BY accountID ORDER BY transactionMonth) AS cumulativeDebitSum, SUM(creditSum) OVER (PARTITION BY accountID ORDER BY transactionMonth) AS cumulativeCreditSum FROM transactionssummary ORDER BY accountID, transactionMonth;");
+                    "create view cumulativesummary as SELECT accountID, transactionMonth, debitSum, creditSum, SUM(debitSum) OVER (PARTITION BY accountID ORDER BY transactionMonth) AS cumulativeDebitSum, SUM(creditSum) OVER (PARTITION BY accountID ORDER BY transactionMonth) AS cumulativeCreditSum FROM transactionssummary ORDER BY accountID, transactionMonth;");
 
             statement.addBatch(
                     "create view forwardedbalances as SELECT accountID, transactionMonth, debitSum, creditSum, cumulativeDebitSum, cumulativeCreditSum FROM cumulativesummary c WHERE transactionMonth < DATE_FORMAT(curdate(), '%Y-%m-01') AND (accountID, transactionMonth) IN (SELECT accountID, MAX(transactionMonth) FROM cumulativesummary WHERE transactionMonth < DATE_FORMAT(curdate(), '%Y-%m-01') GROUP BY accountID) ORDER BY accountID;");

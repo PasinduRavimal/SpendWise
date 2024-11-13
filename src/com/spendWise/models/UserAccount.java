@@ -3,7 +3,6 @@ package com.spendWise.models;
 import java.io.IOException;
 import java.sql.*;
 
-import com.spendWise.controllers.DashboardContentController;
 import com.spendWise.util.*;
 
 public abstract class UserAccount {
@@ -39,7 +38,6 @@ public abstract class UserAccount {
     public static boolean signup(String username, String displayName, String password) throws IOException, SQLException {
         try {
             UserAccountModel user = UserAccountModel.newUserAccount(username, displayName, password);
-            user.saveToDatabase();
 
             Account.updateCurrentUser(user);
 
@@ -68,9 +66,9 @@ public abstract class UserAccount {
         try {
             UserAccount account = UserAccountModel.getUserAccount(username, password);
 
-            Account.updateCurrentUser(account);
-            DashboardContentController.setUserLabel(account.getDisplayName());
-            DashboardContentController.updateLastTransactions();
+            if (account != null) {
+                Account.updateCurrentUser(account);
+            }
 
             return account;
 

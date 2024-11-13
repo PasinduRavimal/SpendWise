@@ -3,7 +3,6 @@ package com.spendWise.models;
 import java.sql.*;
 import java.util.*;
 
-import com.spendWise.controllers.HomeController;
 import com.spendWise.util.DatabaseConnection;
 
 public abstract class Account {
@@ -14,9 +13,11 @@ public abstract class Account {
 
     public abstract String getAccountName();
 
-    public abstract void setAccountName(String accountName) throws SQLException;
+    abstract void setAccountName(String accountName) throws SQLException;
 
-    public abstract void deleteAccount() throws SQLException;
+    abstract void deleteAccount() throws SQLException;
+
+    abstract void addToDatabase() throws SQLException;
 
     public abstract double getAccountBalance() throws SQLException;
 
@@ -32,7 +33,21 @@ public abstract class Account {
 
     public static synchronized List<Account> getAccountsList() throws SQLException {
         if (currentUser == null) {
+            throw new IllegalStateException("User not logged in");
+        }
+
+        if (accounts.isEmpty()){
+            updateAccountsList();
             return accounts;
+        }
+
+        return accounts;
+    }
+
+    public static synchronized void updateAccountsList() throws SQLException {
+
+        if (currentUser == null) {
+            throw new IllegalStateException("User not logged in.");
         }
 
         accounts.clear();
@@ -49,7 +64,6 @@ public abstract class Account {
             rs.close();
             ps.close();
 
-            return accounts;
         } catch (SQLException e) {
             for (Throwable t : e) {
                 if (t instanceof SQLNonTransientConnectionException) {
@@ -68,15 +82,13 @@ public abstract class Account {
 
     public static synchronized void updateCurrentUser(UserAccount user) throws SQLException {
         currentUser = user;
-        getAccountsList();
-        HomeController.getInstance().addAccounts();
+        updateAccountsList();
     }
 
     public static Account createAccount(String accountName) throws SQLException {
         if (!doesAccountExist(accountName)) {
             Account newAccount = new AccountModel(accountName);
             accounts.add(newAccount);
-            HomeController.getInstance().addAccounts();
             return newAccount;
         } else {
             return null;
@@ -120,6 +132,37 @@ public abstract class Account {
         }
     }
 
+    public static boolean doesAccountHasGeneralJournalEntries(String accountName) throws SQLException {
+        try {
+            Account account = getAccountByName(accountName);
+            if (account == null) {
+                return false;
+            }
+            String query = "SELECT * FROM generaljournal WHERE debitAccountID = ? OR creditAccountID = ? LIMIT 1";
+            PreparedStatement ps = DatabaseConnection.getPreparedStatement(query, account.getAccountID(),
+                    account.getAccountID());
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                rs.close();
+                ps.close();
+                return true;
+            }
+
+            rs.close();
+            ps.close();
+            return false;
+        } catch (SQLException e) {
+            for (Throwable t : e) {
+                if (t instanceof SQLNonTransientConnectionException) {
+                    throw new SQLException("Database connection error.");
+                }
+            }
+
+            throw e;
+        }
+    }
+
     public static boolean doesAccountExist(String accountName) throws SQLException {
         return getAccountsList().parallelStream().anyMatch(account -> account.getAccountName().equals(accountName));
     }
@@ -138,7 +181,6 @@ public abstract class Account {
             account.deleteAccount();
 
             accounts.remove(account);
-            HomeController.getInstance().addAccounts();
         } catch (SQLException e) {
             for (Throwable t : e) {
                 if (t instanceof SQLNonTransientConnectionException) {
@@ -161,7 +203,6 @@ public abstract class Account {
         }
 
         accounts.get(accounts.indexOf(account)).setAccountName(newAccountName);
-        HomeController.getInstance().addAccounts();
     }
 
     public static double getCashBookBalance() throws SQLException {

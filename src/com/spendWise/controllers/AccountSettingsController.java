@@ -36,6 +36,7 @@ public class AccountSettingsController implements Initializable {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Account already exists.");
                     alert.showAndWait();
                 } else {
+                    HomeController.getInstance().addAccounts();
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Account created successfully.");
                     alert.showAndWait();
                 }
@@ -55,8 +56,12 @@ public class AccountSettingsController implements Initializable {
                 } else if (Account.doesAccountHasTransactions(mainAccountNameTextField.getText())) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Account has transactions.");
                     alert.showAndWait();
+                } else if (Account.doesAccountHasGeneralJournalEntries(mainAccountNameTextField.getText())){
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Account has general journal entries.");
+                    alert.showAndWait();
                 } else {
                     Account.deleteAccount(mainAccountNameTextField.getText());
+                    HomeController.getInstance().addAccounts();
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Account deleted successfully.");
                     alert.showAndWait();
                     mainAccountNameTextField.clear();
@@ -89,6 +94,7 @@ public class AccountSettingsController implements Initializable {
                     return;
                 } else {
                     Account.renameAccount(oldAccountNameTextField.getText(), newAccountNameTextField.getText());
+                    HomeController.getInstance().addAccounts();
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Account renamed successfully.");
                     alert.showAndWait();
                     oldAccountNameTextField.clear();
